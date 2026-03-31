@@ -95,71 +95,82 @@ class KeyboardViewController: UIInputViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.heightAnchor.constraint(equalToConstant: 260).isActive = true
     }
-
+    
+    
     func setupUI() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .systemGroupedBackground
 
-        // 🌍 Language Button
+        // 🌍 Language Button (Pill Style)
         languageButton = UIButton(type: .system)
         languageButton.setTitle("🌍 English 🇺🇸", for: .normal)
-        languageButton.backgroundColor = .systemGray5
-        languageButton.layer.cornerRadius = 8
+        languageButton.titleLabel?.font = .systemFont(ofSize: 15, weight: .medium)
+        languageButton.backgroundColor = .secondarySystemBackground
+        languageButton.layer.cornerRadius = 20
         languageButton.translatesAutoresizingMaskIntoConstraints = false
         languageButton.addTarget(self, action: #selector(toggleDropdown), for: .touchUpInside)
 
-        // 🔁 Translate Button
+        // 📝 Preview (MAIN FOCUS)
+        previewLabel = UILabel()
+        previewLabel.text = "Translation will appear here..."
+        previewLabel.numberOfLines = 0
+        previewLabel.font = .systemFont(ofSize: 15)
+        previewLabel.textAlignment = .left
+        previewLabel.textColor = .label
+        previewLabel.translatesAutoresizingMaskIntoConstraints = false
+        previewLabel.applyCardStyle()
+        previewLabel.layoutMargins = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
+
+        // 🔁 Translate Button (CTA STYLE)
         translateButton = UIButton(type: .system)
-        translateButton.setTitle("🌐 Translate", for: .normal)
+        translateButton.setTitle("Translate 🌐", for: .normal)
+        translateButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
         translateButton.backgroundColor = .systemBlue
         translateButton.setTitleColor(.white, for: .normal)
-        translateButton.layer.cornerRadius = 10
+        translateButton.layer.cornerRadius = 14
         translateButton.translatesAutoresizingMaskIntoConstraints = false
         translateButton.addTarget(self, action: #selector(handleTranslate), for: .touchUpInside)
 
-        // 📝 Preview
-        previewLabel = UILabel()
-        previewLabel.text = "Translation will appear here..."
-        previewLabel.numberOfLines = 3
-        previewLabel.textAlignment = .center
-        previewLabel.backgroundColor = .systemGray6
-        previewLabel.layer.cornerRadius = 10
-        previewLabel.clipsToBounds = true
-        previewLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        // 📋 Table
+        // 📋 Dropdown Table (Floating Card)
         tableView = UITableView()
         tableView.isHidden = true
-        tableView.layer.cornerRadius = 8
+        tableView.layer.cornerRadius = 16
+        tableView.layer.masksToBounds = true
+        tableView.applyCardStyle()
         tableView.delegate = self
         tableView.dataSource = self
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
 
         view.addSubview(languageButton)
-        view.addSubview(tableView)
-        view.addSubview(translateButton)
         view.addSubview(previewLabel)
+        view.addSubview(translateButton)
+        view.addSubview(tableView)
 
         NSLayoutConstraint.activate([
-            languageButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 8),
-            languageButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
-            languageButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
+            // 🌍 Language
+            languageButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
+            languageButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            languageButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
             languageButton.heightAnchor.constraint(equalToConstant: 40),
 
-            tableView.topAnchor.constraint(equalTo: languageButton.bottomAnchor, constant: 5),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
-            tableView.heightAnchor.constraint(equalToConstant: 150),
+            // 📝 Preview
+            previewLabel.topAnchor.constraint(equalTo: languageButton.bottomAnchor, constant: 10),
+            previewLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            previewLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
 
-            translateButton.topAnchor.constraint(equalTo: languageButton.bottomAnchor, constant: 8),
-            translateButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
-            translateButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
+            // 🔁 Button
+            translateButton.topAnchor.constraint(equalTo: previewLabel.bottomAnchor, constant: 10),
+            translateButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            translateButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
             translateButton.heightAnchor.constraint(equalToConstant: 44),
 
-            previewLabel.topAnchor.constraint(equalTo: translateButton.bottomAnchor, constant: 8),
-            previewLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
-            previewLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
-            previewLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -8)
+            translateButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -10),
+
+            // 📋 Dropdown
+            tableView.topAnchor.constraint(equalTo: languageButton.bottomAnchor, constant: 6),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
+            tableView.heightAnchor.constraint(equalToConstant: 180),
         ])
     }
 
@@ -276,5 +287,16 @@ extension KeyboardViewController {
         }
 
         textDocumentProxy.insertText(newText)
+    }
+}
+
+extension UIView {
+    func applyCardStyle() {
+        self.backgroundColor = .secondarySystemBackground
+        self.layer.cornerRadius = 16
+        self.layer.shadowColor = UIColor.black.cgColor
+        self.layer.shadowOpacity = 0.08
+        self.layer.shadowOffset = CGSize(width: 0, height: 4)
+        self.layer.shadowRadius = 8
     }
 }
