@@ -14,7 +14,7 @@ import AVFoundation
 struct AssemblyAIConfig {
     /// Replace with your actual AssemblyAI API key
     /// Get one at: https://www.assemblyai.com/dashboard/signup
-    static let apiKey = "60a35cf48cb94bb3949124a979415307"
+    static let apiKey = "..."
     
     /// Base URL for pre-recorded transcription
     static let baseURL = "https://api.assemblyai.com"
@@ -71,7 +71,7 @@ class AssemblyAITranscriptionService {
     
     /// Upload a local audio file to AssemblyAI and return the upload URL
     func uploadAudio(fileURL: URL, completion: @escaping (Result<String, TranscriptionError>) -> Void) {
-        guard AssemblyAIConfig.apiKey != "60a35cf48cb94bb3949124a979415307" else {
+        guard AssemblyAIConfig.apiKey != "..." else {
             completion(.failure(.invalidAPIKey))
             return
         }
@@ -107,7 +107,7 @@ class AssemblyAITranscriptionService {
     
     /// Upload audio data directly (not from a file) to AssemblyAI
     func uploadAudioData(_ audioData: Data, completion: @escaping (Result<String, TranscriptionError>) -> Void) {
-        guard AssemblyAIConfig.apiKey != "60a35cf48cb94bb3949124a979415307" else {
+        guard AssemblyAIConfig.apiKey != "..." else {
             completion(.failure(.invalidAPIKey))
             return
         }
@@ -251,7 +251,7 @@ class AssemblyAIStreamingService: NSObject {
     
     /// Connect to AssemblyAI streaming WebSocket
     func connect() {
-        guard AssemblyAIConfig.apiKey != "60a35cf48cb94bb3949124a979415307" else {
+        guard AssemblyAIConfig.apiKey != "..." else {
             delegate?.streamingDidEncounterError(
                 AssemblyAITranscriptionService.TranscriptionError.invalidAPIKey
             )
