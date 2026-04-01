@@ -47,11 +47,21 @@
 			);
 			target = CEF46D1A2F79B55200EE3309 /* Translate Voice Message Keyboard */;
 		};
+		CEF46D312F7C80D100EE3309 /* Exceptions for "TranslatingVoiceMessage" folder in "TranslatingVoiceMessage" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CEF46D022F79B44C00EE3309 /* TranslatingVoiceMessage */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CEF46D052F79B44C00EE3309 /* TranslatingVoiceMessage */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CEF46D312F7C80D100EE3309 /* Exceptions for "TranslatingVoiceMessage" folder in "TranslatingVoiceMessage" target */,
+			);
 			path = TranslatingVoiceMessage;
 			sourceTree = "<group>";
 		};
@@ -361,6 +371,9 @@
 				DEVELOPMENT_TEAM = 4NG5UXJYS8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TranslatingVoiceMessage/Info.plist;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need microphone access for voice typing";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "We need speech recognition for voice typing";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -390,6 +403,9 @@
 				DEVELOPMENT_TEAM = 4NG5UXJYS8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TranslatingVoiceMessage/Info.plist;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need microphone access for voice typing";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "We need speech recognition for voice typing";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -418,6 +434,7 @@
 				INFOPLIST_FILE = "Translate Voice Message Keyboard/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Translate Voice Message Keyboard";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This keyboard uses the microphone to provide real-time voice typing and transcription.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -443,6 +460,7 @@
 				INFOPLIST_FILE = "Translate Voice Message Keyboard/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Translate Voice Message Keyboard";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "This keyboard uses the microphone to provide real-time voice typing and transcription.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

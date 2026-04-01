@@ -2,23 +2,31 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSExtension</key>
-	<dict>
-		<key>NSExtensionAttributes</key>
-		<dict>
-			<key>IsASCIICapable</key>
-			<false/>
-			<key>PrefersRightToLeft</key>
-			<false/>
-			<key>PrimaryLanguage</key>
-			<string>en-US</string>
-			<key>RequestsOpenAccess</key>
-			<true/>
-		</dict>
-		<key>NSExtensionPointIdentifier</key>
-		<string>com.apple.keyboard-service</string>
-		<key>NSExtensionPrincipalClass</key>
-		<string>$(PRODUCT_MODULE_NAME).KeyboardViewController</string>
-	</dict>
+    <key>NSExtension</key>
+    <dict>
+        <key>NSExtensionAttributes</key>
+        <dict>
+            <!-- REQUIRED: Enables network access and microphone for keyboard extension -->
+            <key>RequestsOpenAccess</key>
+            <true/>
+            <!-- Primary language -->
+            <key>PrimaryLanguage</key>
+            <string>en</string>
+            <!-- Prefix for global identifier -->
+            <key>PrefersRightToLeft</key>
+            <false/>
+            <!-- Set to true if your keyboard should be the default -->
+            <key>IsASCIICapable</key>
+            <true/>
+        </dict>
+        <key>NSExtensionPointIdentifier</key>
+        <string>com.apple.keyboard-service</string>
+        <key>NSExtensionPrincipalClass</key>
+        <string>$(PRODUCT_MODULE_NAME).KeyboardViewController</string>
+    </dict>
+
+    <!-- REQUIRED: Microphone usage description -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This keyboard needs microphone access to convert your speech to text using AssemblyAI.</string>
 </dict>
 </plist>
