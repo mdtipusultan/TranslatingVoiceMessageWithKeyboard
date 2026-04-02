@@ -12,6 +12,7 @@ struct MainTabView: View {
     
     @State private var selectedTab: Tab = .voice
     @State private var tabBarVisible = true
+    @State private var openedFromKeyboard = false
     
     enum Tab: String, CaseIterable {
         case voice
@@ -47,7 +48,7 @@ struct MainTabView: View {
             Group {
                 switch selectedTab {
                 case .voice:
-                    VoiceTranslationView()
+                    VoiceTranslationView(autoStartListening: $openedFromKeyboard)
                 case .keyboard:
                     PermissionInstructionView()
                 case .settings:
@@ -61,6 +62,15 @@ struct MainTabView: View {
         }
         .ignoresSafeArea(.keyboard)
         .preferredColorScheme(.dark)
+        .onOpenURL { url in
+            // Handle voicetranslator://voice from keyboard extension
+            if url.scheme == "voicetranslator" {
+                withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) {
+                    selectedTab = .voice
+                    openedFromKeyboard = true
+                }
+            }
+        }
     }
     
     // MARK: - Custom Tab Bar

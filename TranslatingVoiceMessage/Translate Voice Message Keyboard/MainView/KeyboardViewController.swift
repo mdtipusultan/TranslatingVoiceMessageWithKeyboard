@@ -12,7 +12,6 @@
 //
 
 import UIKit
-import Speech
 
 class KeyboardViewController: UIInputViewController {
     
@@ -59,7 +58,9 @@ class KeyboardViewController: UIInputViewController {
     // MARK: - Services
     
     private var translationService: TranslationService!
-    private var speechManager: SpeechTranslationManager!
+    
+    // URL scheme to open the host app for voice translation
+    private let hostAppURLScheme = "voicetranslator://voice"
     
     // MARK: - State
     
@@ -106,9 +107,6 @@ class KeyboardViewController: UIInputViewController {
         loadModePreference()
         
         translationService = TranslationService()
-        speechManager = SpeechTranslationManager()
-        speechManager.delegate = self
-        speechManager.prepare()
         
         setupUI()
     }
@@ -219,7 +217,6 @@ class KeyboardViewController: UIInputViewController {
     
     @objc private func switchToTyping() {
         guard currentMode != .typing else { return }
-        if speechManager.isListening { speechManager.stopListening() }
         currentMode = .typing
         saveModePreference()
         applyMode(animated: true)
@@ -227,7 +224,6 @@ class KeyboardViewController: UIInputViewController {
     
     @objc private func switchToTranslation() {
         guard currentMode != .translation else { return }
-        if speechManager.isListening { speechManager.stopListening() }
         currentMode = .translation
         saveModePreference()
         applyMode(animated: true)
@@ -461,33 +457,9 @@ class KeyboardViewController: UIInputViewController {
     @objc private func spaceTapped() { textDocumentProxy.insertText(" ") }
     @objc private func returnTapped() { textDocumentProxy.insertText("\n") }
     
-    /// Mic button in typing mode: speak → insert text (+ translate if language selected)
+    /// Mic button in typing mode: opens the host app for voice translation
     @objc private func typingMicTapped() {
-        if speechManager.isListening {
-            speechManager.stopListening()
-            updateTypingMicState(listening: false)
-        } else {
-            recognizedText = ""
-            speechManager.startListening()
-        }
-    }
-    
-    private func updateTypingMicState(listening: Bool) {
-        if listening {
-            typingMicButton?.backgroundColor = recordingColor
-            typingMicButton?.tintColor = .white
-            
-            // Add pulse
-            let pulse = CABasicAnimation(keyPath: "opacity")
-            pulse.fromValue = 1.0; pulse.toValue = 0.4
-            pulse.duration = 0.6; pulse.autoreverses = true
-            pulse.repeatCount = .infinity
-            typingMicButton?.layer.add(pulse, forKey: "pulse")
-        } else {
-            typingMicButton?.backgroundColor = accentGreen
-            typingMicButton?.tintColor = .white
-            typingMicButton?.layer.removeAllAnimations()
-        }
+        openHostApp()
     }
     
     // ============================================================
@@ -674,40 +646,51 @@ class KeyboardViewController: UIInputViewController {
         ])
     }
     
-    /// Mic button in translation mode
+    /// Mic button in translation mode: opens the host app for voice translation
     @objc private func voiceMicTapped() {
         if isLanguagePickerShown { hideLanguagePicker() }
-        
-        if speechManager.isListening {
-            speechManager.stopListening()
-        } else {
-            recognizedText = ""
-            speechManager.startListening()
-        }
+        openHostApp()
     }
     
-    private func updateVoiceButtonState(listening: Bool) {
-        if listening {
-            voiceButton.backgroundColor = recordingColor
-            voiceButton.layer.shadowColor = recordingColor.cgColor
-            let stopCfg = UIImage.SymbolConfiguration(pointSize: 16, weight: .bold)
-            voiceButton.setImage(UIImage(systemName: "stop.fill", withConfiguration: stopCfg), for: .normal)
-            voiceStatusLabel.text = "Listening..."
-            voiceStatusLabel.textColor = recordingColor
-            voiceStatusLabel.isHidden = false
-            
-            let pulse = CABasicAnimation(keyPath: "transform.scale")
-            pulse.fromValue = 1.0; pulse.toValue = 1.08
-            pulse.duration = 0.5; pulse.autoreverses = true
-            pulse.repeatCount = .infinity
-            voiceButton.layer.add(pulse, forKey: "pulse")
-        } else {
-            voiceButton.backgroundColor = accentGreen
-            voiceButton.layer.shadowColor = accentGreen.cgColor
-            let micCfg = UIImage.SymbolConfiguration(pointSize: 18, weight: .bold)
-            voiceButton.setImage(UIImage(systemName: "mic.fill", withConfiguration: micCfg), for: .normal)
-            voiceStatusLabel.isHidden = true
-            voiceButton.layer.removeAllAnimations()
+    // MARK: - Open Host App
+    
+    /// Opens the host app for voice translation via URL scheme.
+    /// Keyboard extensions can't use UIApplication.shared directly,
+    /// so we walk the responder chain to find it.
+    private func openHostApp() {
+        guard let url = URL(string: hostAppURLScheme) else { return }
+        
+        // Flash the mic button to give feedback
+        let btn = (currentMode == .typing) ? typingMicButton : voiceButton
+        UIView.animate(withDuration: 0.1, animations: {
+            btn?.backgroundColor = self.primaryColor
+            btn?.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+        }) { _ in
+            UIView.animate(withDuration: 0.15) {
+                btn?.backgroundColor = self.accentGreen
+                btn?.transform = .identity
+            }
+        }
+        
+        // Walk responder chain to find UIApplication
+        var responder: UIResponder? = self
+        while let r = responder {
+            if let app = r as? UIApplication {
+                app.open(url, options: [:], completionHandler: nil)
+                return
+            }
+            responder = r.next
+        }
+        
+        // Fallback: use selector-based approach
+        let selector = NSSelectorFromString("openURL:")
+        var res: UIResponder? = self
+        while let r = res {
+            if r.responds(to: selector) {
+                r.perform(selector, with: url)
+                return
+            }
+            res = r.next
         }
     }
     
@@ -902,84 +885,6 @@ class KeyboardViewController: UIInputViewController {
     }
 }
 
-// MARK: - SpeechTranslationDelegate
-
-extension KeyboardViewController: SpeechTranslationDelegate {
-    
-    func speechDidStart() {
-        if currentMode == .translation {
-            updateVoiceButtonState(listening: true)
-            inputPreviewLabel.text = "Listening..."
-            inputPreviewLabel.textColor = recordingColor
-        } else {
-            updateTypingMicState(listening: true)
-        }
-    }
-    
-    func speechDidRecognize(text: String, isFinal: Bool) {
-        recognizedText = text
-        
-        if currentMode == .translation {
-            // Show recognized text in preview
-            inputPreviewLabel.text = text
-            inputPreviewLabel.textColor = textColor
-            
-            if isFinal && selectedLanguage.code != "none" {
-                // Auto-translate the final result
-                translatedPreviewLabel.text = "Translating..."
-                translatedPreviewLabel.textColor = accentOrange
-                
-                translationService.translate(text: text, to: selectedLanguage.code) { [weak self] result in
-                    DispatchQueue.main.async {
-                        guard let self = self else { return }
-                        switch result {
-                        case .success(let translated):
-                            self.translatedPreviewLabel.text = translated
-                            self.translatedPreviewLabel.textColor = self.accentGreen
-                            // Insert translated text
-                            self.textDocumentProxy.insertText(translated)
-                        case .failure:
-                            self.translatedPreviewLabel.text = text
-                            self.translatedPreviewLabel.textColor = self.textColor
-                            // Insert original if translation fails
-                            self.textDocumentProxy.insertText(text)
-                        }
-                    }
-                }
-            } else if isFinal && selectedLanguage.code == "none" {
-                // No translation, just insert
-                textDocumentProxy.insertText(text)
-            }
-        } else {
-            // Typing mode: insert text directly as recognized
-            if isFinal {
-                textDocumentProxy.insertText(text + " ")
-            }
-        }
-    }
-    
-    func speechDidFail(error: String) {
-        if currentMode == .translation {
-            updateVoiceButtonState(listening: false)
-            inputPreviewLabel.text = "Error: \(error)"
-            inputPreviewLabel.textColor = recordingColor
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-                self?.inputPreviewLabel.text = "Type, dictate, or tap 🎤 to speak"
-                self?.inputPreviewLabel.textColor = UIColor(white: 0.40, alpha: 1.0)
-            }
-        } else {
-            updateTypingMicState(listening: false)
-        }
-    }
-    
-    func speechDidStop() {
-        if currentMode == .translation {
-            updateVoiceButtonState(listening: false)
-        } else {
-            updateTypingMicState(listening: false)
-        }
-    }
-}
 
 // MARK: - Language Collection
 

@@ -126,6 +126,9 @@ class SpeechManager: ObservableObject {
 
 struct VoiceTranslationView: View {
     
+    /// When true, automatically starts listening (set by keyboard URL scheme)
+    @Binding var autoStartListening: Bool
+    
     @StateObject private var speechManager = SpeechManager()
     @State private var selectedLanguage: Language = SupportedLanguages.all[1]
     @State private var translatedText = ""
@@ -133,6 +136,7 @@ struct VoiceTranslationView: View {
     @State private var showLanguagePicker = false
     @State private var copied = false
     @State private var permissionGranted = false
+    @State private var showFromKeyboardBanner = false
     
     private let translationService = TranslationService()
     
@@ -174,6 +178,17 @@ struct VoiceTranslationView: View {
             loadLanguagePreference()
             speechManager.requestPermissions { granted in
                 permissionGranted = granted
+                // Auto-start if opened from keyboard
+                if granted && autoStartListening {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        speechManager.startListening()
+                        autoStartListening = false
+                        withAnimation { showFromKeyboardBanner = true }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                            withAnimation { showFromKeyboardBanner = false }
+                        }
+                    }
+                }
             }
         }
         .onDisappear {
@@ -202,22 +217,45 @@ struct VoiceTranslationView: View {
     // MARK: - Header
     
     private var headerSection: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Voice Translator")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
+        VStack(spacing: 8) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Voice Translator")
+                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                        .foregroundColor(.white)
+                    
+                    Text("Speak and translate in real-time")
+                        .font(.system(size: 14))
+                        .foregroundColor(.white.opacity(0.45))
+                }
+                Spacer()
                 
-                Text("Speak and translate in real-time")
-                    .font(.system(size: 14))
-                    .foregroundColor(.white.opacity(0.45))
+                // Status indicator
+                Circle()
+                    .fill(permissionGranted ? accentGreen : accentOrange)
+                    .frame(width: 8, height: 8)
             }
-            Spacer()
             
-            // Status indicator
-            Circle()
-                .fill(permissionGranted ? accentGreen : accentOrange)
-                .frame(width: 8, height: 8)
+            // Banner when opened from keyboard
+            if showFromKeyboardBanner {
+                HStack(spacing: 6) {
+                    Image(systemName: "keyboard")
+                        .font(.system(size: 11, weight: .medium))
+                    Text("Opened from keyboard — speak now!")
+                        .font(.system(size: 12, weight: .medium))
+                }
+                .foregroundColor(.white)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(
+                    Capsule()
+                        .fill(accentBlue.opacity(0.3))
+                        .overlay(
+                            Capsule().stroke(accentBlue.opacity(0.4), lineWidth: 1)
+                        )
+                )
+                .transition(.move(edge: .top).combined(with: .opacity))
+            }
         }
         .padding(.top, 10)
     }
@@ -680,6 +718,6 @@ struct VoiceTranslationView: View {
 // MARK: - Preview
 
 #Preview {
-    VoiceTranslationView()
+    VoiceTranslationView(autoStartListening: .constant(false))
         .preferredColorScheme(.dark)
 }

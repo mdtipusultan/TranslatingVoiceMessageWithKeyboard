@@ -1,5 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+    HOST APP Info.plist
+
+    The containing (host) app MUST also declare microphone usage.
+    iOS keyboard extensions inherit permissions from the host app.
+-->
 <plist version="1.0">
-<dict/>
+<dict>
+    <!-- REQUIRED in the HOST app for keyboard extension to use microphone -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app uses the microphone for voice-to-text in the keyboard.</string>
+
+    <!-- REQUIRED for Apple Speech framework -->
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>This app uses speech recognition for voice-to-text translation in the keyboard.</string>
+
+    <!-- URL SCHEME: allows the keyboard extension to open the host app -->
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>com.voicetranslator.app</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>voicetranslator</string>
+            </array>
+        </dict>
+    </array>
+</dict>
 </plist>
