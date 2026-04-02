@@ -2,14 +2,17 @@
 //  KeyboardViewController.swift
 //  VoiceKeyboard
 //
-//  iOS Keyboard Extension — Translation + Typing Keyboard
+//  iOS Keyboard Extension — Typing + Voice Translation
 //  Features:
-//    - Toggle between Translation mode and Typing mode
-//    - Translation mode: auto-translates typed/dictated text to 65+ languages
-//    - Typing mode: full QWERTY keyboard with shift, numbers, symbols
+//    - Toggle between Typing and Translation modes
+//    - Typing: full QWERTY with shift, numbers, symbols
+//    - Translation: auto-translates typed/dictated text to 65+ languages
+//    - Voice input: tap mic to speak, auto-transcribe + translate
+//    - Works in any app (WhatsApp, Instagram, Messenger, etc.)
 //
 
 import UIKit
+import Speech
 
 class KeyboardViewController: UIInputViewController {
     
@@ -40,12 +43,15 @@ class KeyboardViewController: UIInputViewController {
     private var inputPreviewLabel: UILabel!
     private var translatedPreviewLabel: UILabel!
     private var translateButton: UIButton!
+    private var voiceButton: UIButton!
+    private var voiceStatusLabel: UILabel!
     
     // MARK: - Typing Mode UI
     
     private var typingContainer: UIView!
+    private var typingMicButton: UIButton!
     private var keyRows: [UIStackView] = []
-    private var isShifted = true  // Start with shift on (first letter capitalized)
+    private var isShifted = true
     private var isCapsLock = false
     private var isNumberMode = false
     private var isSymbolMode = false
@@ -53,6 +59,7 @@ class KeyboardViewController: UIInputViewController {
     // MARK: - Services
     
     private var translationService: TranslationService!
+    private var speechManager: SpeechTranslationManager!
     
     // MARK: - State
     
@@ -61,6 +68,7 @@ class KeyboardViewController: UIInputViewController {
     private var lastTranslatedText = ""
     private var previousDocumentText = ""
     private var autoTranslateTimer: Timer?
+    private var recognizedText = ""
     
     // MARK: - Colors
     
@@ -70,6 +78,7 @@ class KeyboardViewController: UIInputViewController {
     private let buttonColor = UIColor(red: 0.24, green: 0.24, blue: 0.30, alpha: 1.0)
     private let keyColor = UIColor(red: 0.28, green: 0.28, blue: 0.35, alpha: 1.0)
     private let keyHighlight = UIColor(red: 0.38, green: 0.38, blue: 0.46, alpha: 1.0)
+    private let recordingColor = UIColor(red: 0.91, green: 0.30, blue: 0.24, alpha: 1.0)
     private let accentGreen = UIColor(red: 0.30, green: 0.78, blue: 0.55, alpha: 1.0)
     private let accentOrange = UIColor(red: 0.95, green: 0.62, blue: 0.22, alpha: 1.0)
     private let textColor = UIColor.white
@@ -95,7 +104,12 @@ class KeyboardViewController: UIInputViewController {
         super.viewDidLoad()
         loadLanguagePreference()
         loadModePreference()
+        
         translationService = TranslationService()
+        speechManager = SpeechTranslationManager()
+        speechManager.delegate = self
+        speechManager.prepare()
+        
         setupUI()
     }
     
@@ -113,8 +127,8 @@ class KeyboardViewController: UIInputViewController {
     }
     
     private func loadModePreference() {
-        let saved = UserDefaults.standard.string(forKey: "keyboardMode") ?? "typing"
-        currentMode = saved == "translation" ? .translation : .typing
+        let s = UserDefaults.standard.string(forKey: "keyboardMode") ?? "typing"
+        currentMode = s == "translation" ? .translation : .typing
     }
     
     private func saveModePreference() {
@@ -159,14 +173,12 @@ class KeyboardViewController: UIInputViewController {
         modeToggleContainer.translatesAutoresizingMaskIntoConstraints = false
         keyboardView.addSubview(modeToggleContainer)
         
-        // Sliding indicator
         toggleIndicator = UIView()
         toggleIndicator.backgroundColor = primaryColor
         toggleIndicator.layer.cornerRadius = 8
         toggleIndicator.translatesAutoresizingMaskIntoConstraints = false
         modeToggleContainer.addSubview(toggleIndicator)
         
-        // Typing mode button
         typingModeBtn = UIButton(type: .custom)
         typingModeBtn.setTitle("⌨ Typing", for: .normal)
         typingModeBtn.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: .bold)
@@ -175,11 +187,10 @@ class KeyboardViewController: UIInputViewController {
         typingModeBtn.addTarget(self, action: #selector(switchToTyping), for: .touchUpInside)
         modeToggleContainer.addSubview(typingModeBtn)
         
-        // Translation mode button
         translationModeBtn = UIButton(type: .custom)
         translationModeBtn.setTitle("🌐 Translate", for: .normal)
         translationModeBtn.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: .bold)
-        translationModeBtn.setTitleColor(UIColor.white.opacity(0.5), for: .normal)
+        translationModeBtn.setTitleColor(UIColor.white.withAlphaComponent(0.45), for: .normal)
         translationModeBtn.translatesAutoresizingMaskIntoConstraints = false
         translationModeBtn.addTarget(self, action: #selector(switchToTranslation), for: .touchUpInside)
         modeToggleContainer.addSubview(translationModeBtn)
@@ -191,17 +202,14 @@ class KeyboardViewController: UIInputViewController {
             modeToggleContainer.leadingAnchor.constraint(equalTo: keyboardView.leadingAnchor, constant: 8),
             modeToggleContainer.trailingAnchor.constraint(equalTo: keyboardView.trailingAnchor, constant: -8),
             modeToggleContainer.heightAnchor.constraint(equalToConstant: 34),
-            
             toggleIndicatorLeading,
             toggleIndicator.topAnchor.constraint(equalTo: modeToggleContainer.topAnchor, constant: 3),
             toggleIndicator.bottomAnchor.constraint(equalTo: modeToggleContainer.bottomAnchor, constant: -3),
             toggleIndicator.widthAnchor.constraint(equalTo: modeToggleContainer.widthAnchor, multiplier: 0.5, constant: -4),
-            
             typingModeBtn.leadingAnchor.constraint(equalTo: modeToggleContainer.leadingAnchor),
             typingModeBtn.topAnchor.constraint(equalTo: modeToggleContainer.topAnchor),
             typingModeBtn.bottomAnchor.constraint(equalTo: modeToggleContainer.bottomAnchor),
             typingModeBtn.widthAnchor.constraint(equalTo: modeToggleContainer.widthAnchor, multiplier: 0.5),
-            
             translationModeBtn.trailingAnchor.constraint(equalTo: modeToggleContainer.trailingAnchor),
             translationModeBtn.topAnchor.constraint(equalTo: modeToggleContainer.topAnchor),
             translationModeBtn.bottomAnchor.constraint(equalTo: modeToggleContainer.bottomAnchor),
@@ -211,6 +219,7 @@ class KeyboardViewController: UIInputViewController {
     
     @objc private func switchToTyping() {
         guard currentMode != .typing else { return }
+        if speechManager.isListening { speechManager.stopListening() }
         currentMode = .typing
         saveModePreference()
         applyMode(animated: true)
@@ -218,6 +227,7 @@ class KeyboardViewController: UIInputViewController {
     
     @objc private func switchToTranslation() {
         guard currentMode != .translation else { return }
+        if speechManager.isListening { speechManager.stopListening() }
         currentMode = .translation
         saveModePreference()
         applyMode(animated: true)
@@ -225,32 +235,20 @@ class KeyboardViewController: UIInputViewController {
     
     private func applyMode(animated: Bool) {
         let isTyping = currentMode == .typing
-        
         let changes = {
-            // Slide indicator
-            let halfWidth = self.modeToggleContainer.bounds.width / 2
-            self.toggleIndicatorLeading.constant = isTyping ? 3 : halfWidth + 1
-            
-            // Button colors
+            let half = self.modeToggleContainer.bounds.width / 2
+            self.toggleIndicatorLeading.constant = isTyping ? 3 : half + 1
             self.typingModeBtn.setTitleColor(isTyping ? .white : UIColor.white.withAlphaComponent(0.45), for: .normal)
             self.translationModeBtn.setTitleColor(isTyping ? UIColor.white.withAlphaComponent(0.45) : .white, for: .normal)
-            
-            // Show/hide containers
             self.typingContainer?.alpha = isTyping ? 1 : 0
             self.translationContainer?.alpha = isTyping ? 0 : 1
-            
             self.modeToggleContainer.layoutIfNeeded()
         }
-        
         if animated {
-            UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut) {
-                changes()
-            }
+            UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut) { changes() }
         } else {
-            // Defer to after layout
             DispatchQueue.main.async { changes() }
         }
-        
         typingContainer?.isUserInteractionEnabled = isTyping
         translationContainer?.isUserInteractionEnabled = !isTyping
     }
@@ -275,174 +273,150 @@ class KeyboardViewController: UIInputViewController {
     }
     
     private func buildKeyboardLayout() {
-        // Remove old rows
         typingContainer.subviews.forEach { $0.removeFromSuperview() }
         keyRows = []
         
         let r1, r2, r3: [String]
-        if isSymbolMode {
-            r1 = symbolRow1; r2 = symbolRow2; r3 = symbolRow3
-        } else if isNumberMode {
-            r1 = numberRow1; r2 = numberRow2; r3 = numberRow3
-        } else {
-            r1 = letterRow1; r2 = letterRow2; r3 = letterRow3
-        }
+        if isSymbolMode { r1 = symbolRow1; r2 = symbolRow2; r3 = symbolRow3 }
+        else if isNumberMode { r1 = numberRow1; r2 = numberRow2; r3 = numberRow3 }
+        else { r1 = letterRow1; r2 = letterRow2; r3 = letterRow3 }
         
         let row1 = makeKeyRow(keys: r1)
         let row2 = makeKeyRow(keys: r2)
         let row3 = makeSpecialRow3(keys: r3)
         let row4 = makeBottomRow()
         
-        let mainStack = UIStackView(arrangedSubviews: [row1, row2, row3, row4])
-        mainStack.axis = .vertical
-        mainStack.spacing = 6
-        mainStack.distribution = .fillEqually
-        mainStack.translatesAutoresizingMaskIntoConstraints = false
-        typingContainer.addSubview(mainStack)
+        let stack = UIStackView(arrangedSubviews: [row1, row2, row3, row4])
+        stack.axis = .vertical
+        stack.spacing = 6
+        stack.distribution = .fillEqually
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        typingContainer.addSubview(stack)
         
         NSLayoutConstraint.activate([
-            mainStack.topAnchor.constraint(equalTo: typingContainer.topAnchor, constant: 2),
-            mainStack.leadingAnchor.constraint(equalTo: typingContainer.leadingAnchor, constant: 3),
-            mainStack.trailingAnchor.constraint(equalTo: typingContainer.trailingAnchor, constant: -3),
-            mainStack.bottomAnchor.constraint(equalTo: typingContainer.bottomAnchor, constant: -4),
+            stack.topAnchor.constraint(equalTo: typingContainer.topAnchor, constant: 2),
+            stack.leadingAnchor.constraint(equalTo: typingContainer.leadingAnchor, constant: 3),
+            stack.trailingAnchor.constraint(equalTo: typingContainer.trailingAnchor, constant: -3),
+            stack.bottomAnchor.constraint(equalTo: typingContainer.bottomAnchor, constant: -4),
         ])
     }
     
     private func makeKeyRow(keys: [String]) -> UIStackView {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.spacing = 4
-        stack.distribution = .fillEqually
-        
-        for key in keys {
-            let btn = makeKeyButton(key)
-            stack.addArrangedSubview(btn)
-        }
-        
-        keyRows.append(stack)
-        return stack
+        let s = UIStackView()
+        s.axis = .horizontal; s.spacing = 4; s.distribution = .fillEqually
+        for key in keys { s.addArrangedSubview(makeKeyButton(key)) }
+        keyRows.append(s)
+        return s
     }
     
     private func makeSpecialRow3(keys: [String]) -> UIStackView {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.spacing = 4
-        stack.distribution = .fill
+        let s = UIStackView()
+        s.axis = .horizontal; s.spacing = 4; s.distribution = .fill
         
         if !isNumberMode && !isSymbolMode {
-            // Shift button
             let shiftBtn = UIButton(type: .custom)
-            let shiftIcon = isShifted || isCapsLock ? "shift.fill" : "shift"
-            let shiftCfg = UIImage.SymbolConfiguration(pointSize: 16, weight: .medium)
-            shiftBtn.setImage(UIImage(systemName: shiftIcon, withConfiguration: shiftCfg), for: .normal)
+            let icon = isShifted || isCapsLock ? "shift.fill" : "shift"
+            let cfg = UIImage.SymbolConfiguration(pointSize: 16, weight: .medium)
+            shiftBtn.setImage(UIImage(systemName: icon, withConfiguration: cfg), for: .normal)
             shiftBtn.tintColor = (isShifted || isCapsLock) ? .white : secondaryTextColor
             shiftBtn.backgroundColor = (isShifted || isCapsLock) ? primaryColor : buttonColor
             shiftBtn.layer.cornerRadius = 6
             shiftBtn.addTarget(self, action: #selector(shiftTapped), for: .touchUpInside)
             shiftBtn.translatesAutoresizingMaskIntoConstraints = false
             shiftBtn.widthAnchor.constraint(equalToConstant: 44).isActive = true
-            stack.addArrangedSubview(shiftBtn)
+            s.addArrangedSubview(shiftBtn)
         }
         
-        // Letter keys
-        let innerStack = UIStackView()
-        innerStack.axis = .horizontal
-        innerStack.spacing = 4
-        innerStack.distribution = .fillEqually
-        for key in keys {
-            innerStack.addArrangedSubview(makeKeyButton(key))
-        }
-        stack.addArrangedSubview(innerStack)
+        let inner = UIStackView()
+        inner.axis = .horizontal; inner.spacing = 4; inner.distribution = .fillEqually
+        for key in keys { inner.addArrangedSubview(makeKeyButton(key)) }
+        s.addArrangedSubview(inner)
         
-        // Backspace
         let bsBtn = UIButton(type: .custom)
         let bsCfg = UIImage.SymbolConfiguration(pointSize: 16, weight: .medium)
         bsBtn.setImage(UIImage(systemName: "delete.left.fill", withConfiguration: bsCfg), for: .normal)
-        bsBtn.tintColor = textColor
-        bsBtn.backgroundColor = buttonColor
-        bsBtn.layer.cornerRadius = 6
+        bsBtn.tintColor = textColor; bsBtn.backgroundColor = buttonColor; bsBtn.layer.cornerRadius = 6
         bsBtn.addTarget(self, action: #selector(backspaceTapped), for: .touchUpInside)
         bsBtn.translatesAutoresizingMaskIntoConstraints = false
         bsBtn.widthAnchor.constraint(equalToConstant: 44).isActive = true
-        stack.addArrangedSubview(bsBtn)
+        s.addArrangedSubview(bsBtn)
         
-        return stack
+        return s
     }
     
     private func makeBottomRow() -> UIStackView {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.spacing = 4
-        stack.distribution = .fill
+        let s = UIStackView()
+        s.axis = .horizontal; s.spacing = 4; s.distribution = .fill
         
-        // 123 / ABC toggle
+        // 123/ABC
         let toggleBtn = UIButton(type: .custom)
         toggleBtn.setTitle(isNumberMode || isSymbolMode ? "ABC" : "123", for: .normal)
         toggleBtn.setTitleColor(textColor, for: .normal)
         toggleBtn.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .bold)
-        toggleBtn.backgroundColor = buttonColor
-        toggleBtn.layer.cornerRadius = 6
+        toggleBtn.backgroundColor = buttonColor; toggleBtn.layer.cornerRadius = 6
         toggleBtn.addTarget(self, action: #selector(numberToggleTapped), for: .touchUpInside)
         toggleBtn.translatesAutoresizingMaskIntoConstraints = false
-        toggleBtn.widthAnchor.constraint(equalToConstant: 48).isActive = true
-        stack.addArrangedSubview(toggleBtn)
+        toggleBtn.widthAnchor.constraint(equalToConstant: 44).isActive = true
+        s.addArrangedSubview(toggleBtn)
         
-        // Symbol toggle (only in number mode)
         if isNumberMode || isSymbolMode {
             let symBtn = UIButton(type: .custom)
             symBtn.setTitle(isSymbolMode ? "123" : "#+=", for: .normal)
             symBtn.setTitleColor(textColor, for: .normal)
             symBtn.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .bold)
-            symBtn.backgroundColor = buttonColor
-            symBtn.layer.cornerRadius = 6
+            symBtn.backgroundColor = buttonColor; symBtn.layer.cornerRadius = 6
             symBtn.addTarget(self, action: #selector(symbolToggleTapped), for: .touchUpInside)
             symBtn.translatesAutoresizingMaskIntoConstraints = false
-            symBtn.widthAnchor.constraint(equalToConstant: 44).isActive = true
-            stack.addArrangedSubview(symBtn)
+            symBtn.widthAnchor.constraint(equalToConstant: 40).isActive = true
+            s.addArrangedSubview(symBtn)
         }
         
-        // Space bar
+        // Mic button in typing mode
+        let micBtn = UIButton(type: .custom)
+        let micCfg = UIImage.SymbolConfiguration(pointSize: 16, weight: .semibold)
+        micBtn.setImage(UIImage(systemName: "mic.fill", withConfiguration: micCfg), for: .normal)
+        micBtn.tintColor = .white
+        micBtn.backgroundColor = accentGreen
+        micBtn.layer.cornerRadius = 6
+        micBtn.addTarget(self, action: #selector(typingMicTapped), for: .touchUpInside)
+        micBtn.translatesAutoresizingMaskIntoConstraints = false
+        micBtn.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        s.addArrangedSubview(micBtn)
+        typingMicButton = micBtn
+        
+        // Space
         let spaceBtn = UIButton(type: .custom)
         spaceBtn.setTitle("space", for: .normal)
         spaceBtn.setTitleColor(textColor, for: .normal)
         spaceBtn.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-        spaceBtn.backgroundColor = keyColor
-        spaceBtn.layer.cornerRadius = 6
+        spaceBtn.backgroundColor = keyColor; spaceBtn.layer.cornerRadius = 6
         spaceBtn.addTarget(self, action: #selector(spaceTapped), for: .touchUpInside)
-        stack.addArrangedSubview(spaceBtn)
+        s.addArrangedSubview(spaceBtn)
         
         // Return
-        let returnBtn = UIButton(type: .custom)
-        returnBtn.setTitle("return", for: .normal)
-        returnBtn.setTitleColor(.white, for: .normal)
-        returnBtn.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .bold)
-        returnBtn.backgroundColor = primaryColor
-        returnBtn.layer.cornerRadius = 6
-        returnBtn.addTarget(self, action: #selector(returnTapped), for: .touchUpInside)
-        returnBtn.translatesAutoresizingMaskIntoConstraints = false
-        returnBtn.widthAnchor.constraint(equalToConstant: 80).isActive = true
-        stack.addArrangedSubview(returnBtn)
+        let retBtn = UIButton(type: .custom)
+        retBtn.setTitle("return", for: .normal)
+        retBtn.setTitleColor(.white, for: .normal)
+        retBtn.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .bold)
+        retBtn.backgroundColor = primaryColor; retBtn.layer.cornerRadius = 6
+        retBtn.addTarget(self, action: #selector(returnTapped), for: .touchUpInside)
+        retBtn.translatesAutoresizingMaskIntoConstraints = false
+        retBtn.widthAnchor.constraint(equalToConstant: 72).isActive = true
+        s.addArrangedSubview(retBtn)
         
-        return stack
+        return s
     }
     
     private func makeKeyButton(_ key: String) -> UIButton {
         let btn = UIButton(type: .custom)
-        let displayKey: String
-        if !isNumberMode && !isSymbolMode && (isShifted || isCapsLock) {
-            displayKey = key.uppercased()
-        } else {
-            displayKey = key
-        }
-        btn.setTitle(displayKey, for: .normal)
+        let display = (!isNumberMode && !isSymbolMode && (isShifted || isCapsLock)) ? key.uppercased() : key
+        btn.setTitle(display, for: .normal)
         btn.setTitleColor(textColor, for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 18, weight: .regular)
-        btn.backgroundColor = keyColor
-        btn.layer.cornerRadius = 6
+        btn.backgroundColor = keyColor; btn.layer.cornerRadius = 6
         btn.layer.shadowColor = UIColor.black.cgColor
         btn.layer.shadowOffset = CGSize(width: 0, height: 1)
-        btn.layer.shadowRadius = 1
-        btn.layer.shadowOpacity = 0.3
+        btn.layer.shadowRadius = 1; btn.layer.shadowOpacity = 0.3
         btn.addTarget(self, action: #selector(keyTapped(_:)), for: .touchUpInside)
         return btn
     }
@@ -451,8 +425,6 @@ class KeyboardViewController: UIInputViewController {
     
     @objc private func keyTapped(_ sender: UIButton) {
         guard let key = sender.titleLabel?.text else { return }
-        
-        // Visual feedback
         UIView.animate(withDuration: 0.05, animations: {
             sender.backgroundColor = self.keyHighlight
             sender.transform = CGAffineTransform(scaleX: 1.15, y: 1.15)
@@ -462,57 +434,60 @@ class KeyboardViewController: UIInputViewController {
                 sender.transform = .identity
             }
         }
-        
         textDocumentProxy.insertText(key)
-        
-        // Auto-unshift after one letter (unless caps lock)
         if isShifted && !isCapsLock && !isNumberMode && !isSymbolMode {
-            isShifted = false
-            buildKeyboardLayout()
+            isShifted = false; buildKeyboardLayout()
         }
     }
     
     @objc private func shiftTapped() {
-        if isCapsLock {
-            // Caps lock off
-            isCapsLock = false
-            isShifted = false
-        } else if isShifted {
-            // Double tap → caps lock
-            isCapsLock = true
-        } else {
-            isShifted = true
-        }
+        if isCapsLock { isCapsLock = false; isShifted = false }
+        else if isShifted { isCapsLock = true }
+        else { isShifted = true }
         buildKeyboardLayout()
     }
     
     @objc private func numberToggleTapped() {
-        if isNumberMode || isSymbolMode {
-            isNumberMode = false
-            isSymbolMode = false
-        } else {
-            isNumberMode = true
-            isSymbolMode = false
-        }
+        if isNumberMode || isSymbolMode { isNumberMode = false; isSymbolMode = false }
+        else { isNumberMode = true; isSymbolMode = false }
         buildKeyboardLayout()
     }
     
     @objc private func symbolToggleTapped() {
-        isSymbolMode.toggle()
-        isNumberMode = !isSymbolMode
-        buildKeyboardLayout()
+        isSymbolMode.toggle(); isNumberMode = !isSymbolMode; buildKeyboardLayout()
     }
     
-    @objc private func backspaceTapped() {
-        textDocumentProxy.deleteBackward()
+    @objc private func backspaceTapped() { textDocumentProxy.deleteBackward() }
+    @objc private func spaceTapped() { textDocumentProxy.insertText(" ") }
+    @objc private func returnTapped() { textDocumentProxy.insertText("\n") }
+    
+    /// Mic button in typing mode: speak → insert text (+ translate if language selected)
+    @objc private func typingMicTapped() {
+        if speechManager.isListening {
+            speechManager.stopListening()
+            updateTypingMicState(listening: false)
+        } else {
+            recognizedText = ""
+            speechManager.startListening()
+        }
     }
     
-    @objc private func spaceTapped() {
-        textDocumentProxy.insertText(" ")
-    }
-    
-    @objc private func returnTapped() {
-        textDocumentProxy.insertText("\n")
+    private func updateTypingMicState(listening: Bool) {
+        if listening {
+            typingMicButton?.backgroundColor = recordingColor
+            typingMicButton?.tintColor = .white
+            
+            // Add pulse
+            let pulse = CABasicAnimation(keyPath: "opacity")
+            pulse.fromValue = 1.0; pulse.toValue = 0.4
+            pulse.duration = 0.6; pulse.autoreverses = true
+            pulse.repeatCount = .infinity
+            typingMicButton?.layer.add(pulse, forKey: "pulse")
+        } else {
+            typingMicButton?.backgroundColor = accentGreen
+            typingMicButton?.tintColor = .white
+            typingMicButton?.layer.removeAllAnimations()
+        }
     }
     
     // ============================================================
@@ -533,7 +508,7 @@ class KeyboardViewController: UIInputViewController {
         
         setupLanguageSelector()
         setupPreviewArea()
-        setupTranslateButton()
+        setupVoiceAndTranslateButtons()
         setupTranslationUtilityButtons()
     }
     
@@ -588,7 +563,7 @@ class KeyboardViewController: UIInputViewController {
         container.addSubview(origLabel)
         
         inputPreviewLabel = UILabel()
-        inputPreviewLabel.text = "Type or dictate, then tap Translate"
+        inputPreviewLabel.text = "Type, dictate, or tap 🎤 to speak"
         inputPreviewLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         inputPreviewLabel.textColor = UIColor(white: 0.40, alpha: 1.0)
         inputPreviewLabel.numberOfLines = 2
@@ -619,18 +594,15 @@ class KeyboardViewController: UIInputViewController {
             container.topAnchor.constraint(equalTo: languageButton.bottomAnchor, constant: 5),
             container.leadingAnchor.constraint(equalTo: translationContainer.leadingAnchor, constant: 8),
             container.trailingAnchor.constraint(equalTo: translationContainer.trailingAnchor, constant: -8),
-            
             origLabel.topAnchor.constraint(equalTo: container.topAnchor, constant: 7),
             origLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 12),
             inputPreviewLabel.topAnchor.constraint(equalTo: origLabel.bottomAnchor, constant: 2),
             inputPreviewLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 12),
             inputPreviewLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -12),
-            
             sep.topAnchor.constraint(equalTo: inputPreviewLabel.bottomAnchor, constant: 5),
             sep.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 12),
             sep.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -12),
             sep.heightAnchor.constraint(equalToConstant: 1),
-            
             transLabel.topAnchor.constraint(equalTo: sep.bottomAnchor, constant: 5),
             transLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 12),
             translatedPreviewLabel.topAnchor.constraint(equalTo: transLabel.bottomAnchor, constant: 2),
@@ -640,7 +612,33 @@ class KeyboardViewController: UIInputViewController {
         ])
     }
     
-    private func setupTranslateButton() {
+    private func setupVoiceAndTranslateButtons() {
+        // Voice button (mic)
+        voiceButton = UIButton(type: .custom)
+        voiceButton.translatesAutoresizingMaskIntoConstraints = false
+        voiceButton.backgroundColor = accentGreen
+        voiceButton.layer.cornerRadius = 10
+        
+        let micCfg = UIImage.SymbolConfiguration(pointSize: 18, weight: .bold)
+        voiceButton.setImage(UIImage(systemName: "mic.fill", withConfiguration: micCfg)?.withRenderingMode(.alwaysTemplate), for: .normal)
+        voiceButton.tintColor = .white
+        voiceButton.layer.shadowColor = accentGreen.cgColor
+        voiceButton.layer.shadowOffset = CGSize(width: 0, height: 2)
+        voiceButton.layer.shadowRadius = 6; voiceButton.layer.shadowOpacity = 0.3
+        voiceButton.addTarget(self, action: #selector(voiceMicTapped), for: .touchUpInside)
+        translationContainer.addSubview(voiceButton)
+        
+        // Voice status label
+        voiceStatusLabel = UILabel()
+        voiceStatusLabel.text = ""
+        voiceStatusLabel.font = UIFont.systemFont(ofSize: 10, weight: .medium)
+        voiceStatusLabel.textColor = secondaryTextColor
+        voiceStatusLabel.textAlignment = .center
+        voiceStatusLabel.translatesAutoresizingMaskIntoConstraints = false
+        voiceStatusLabel.isHidden = true
+        translationContainer.addSubview(voiceStatusLabel)
+        
+        // Translate button
         translateButton = UIButton(type: .custom)
         translateButton.translatesAutoresizingMaskIntoConstraints = false
         translateButton.backgroundColor = primaryColor
@@ -648,40 +646,80 @@ class KeyboardViewController: UIInputViewController {
         translateButton.setTitle("Translate & Replace", for: .normal)
         translateButton.setTitleColor(.white, for: .normal)
         translateButton.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-        
-        let icon = UIImage(systemName: "globe", withConfiguration: UIImage.SymbolConfiguration(pointSize: 14, weight: .bold))
-        translateButton.setImage(icon?.withRenderingMode(.alwaysTemplate), for: .normal)
+        let gIcon = UIImage(systemName: "globe", withConfiguration: UIImage.SymbolConfiguration(pointSize: 14, weight: .bold))
+        translateButton.setImage(gIcon?.withRenderingMode(.alwaysTemplate), for: .normal)
         translateButton.tintColor = .white
         translateButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 8)
         translateButton.layer.shadowColor = primaryColor.cgColor
         translateButton.layer.shadowOffset = CGSize(width: 0, height: 2)
-        translateButton.layer.shadowRadius = 6
-        translateButton.layer.shadowOpacity = 0.25
+        translateButton.layer.shadowRadius = 6; translateButton.layer.shadowOpacity = 0.25
         translateButton.addTarget(self, action: #selector(translateTapped), for: .touchUpInside)
         translationContainer.addSubview(translateButton)
         
         NSLayoutConstraint.activate([
-            translateButton.leadingAnchor.constraint(equalTo: translationContainer.leadingAnchor, constant: 8),
+            // Voice button - left side
+            voiceButton.leadingAnchor.constraint(equalTo: translationContainer.leadingAnchor, constant: 8),
+            voiceButton.bottomAnchor.constraint(equalTo: translationContainer.bottomAnchor, constant: -48),
+            voiceButton.widthAnchor.constraint(equalToConstant: 52),
+            voiceButton.heightAnchor.constraint(equalToConstant: 40),
+            
+            voiceStatusLabel.centerXAnchor.constraint(equalTo: voiceButton.centerXAnchor),
+            voiceStatusLabel.topAnchor.constraint(equalTo: voiceButton.bottomAnchor, constant: 1),
+            
+            // Translate button - right of mic
+            translateButton.leadingAnchor.constraint(equalTo: voiceButton.trailingAnchor, constant: 6),
             translateButton.trailingAnchor.constraint(equalTo: translationContainer.trailingAnchor, constant: -8),
-            translateButton.bottomAnchor.constraint(equalTo: translationContainer.bottomAnchor, constant: -48),
+            translateButton.bottomAnchor.constraint(equalTo: voiceButton.bottomAnchor),
             translateButton.heightAnchor.constraint(equalToConstant: 40),
         ])
     }
     
+    /// Mic button in translation mode
+    @objc private func voiceMicTapped() {
+        if isLanguagePickerShown { hideLanguagePicker() }
+        
+        if speechManager.isListening {
+            speechManager.stopListening()
+        } else {
+            recognizedText = ""
+            speechManager.startListening()
+        }
+    }
+    
+    private func updateVoiceButtonState(listening: Bool) {
+        if listening {
+            voiceButton.backgroundColor = recordingColor
+            voiceButton.layer.shadowColor = recordingColor.cgColor
+            let stopCfg = UIImage.SymbolConfiguration(pointSize: 16, weight: .bold)
+            voiceButton.setImage(UIImage(systemName: "stop.fill", withConfiguration: stopCfg), for: .normal)
+            voiceStatusLabel.text = "Listening..."
+            voiceStatusLabel.textColor = recordingColor
+            voiceStatusLabel.isHidden = false
+            
+            let pulse = CABasicAnimation(keyPath: "transform.scale")
+            pulse.fromValue = 1.0; pulse.toValue = 1.08
+            pulse.duration = 0.5; pulse.autoreverses = true
+            pulse.repeatCount = .infinity
+            voiceButton.layer.add(pulse, forKey: "pulse")
+        } else {
+            voiceButton.backgroundColor = accentGreen
+            voiceButton.layer.shadowColor = accentGreen.cgColor
+            let micCfg = UIImage.SymbolConfiguration(pointSize: 18, weight: .bold)
+            voiceButton.setImage(UIImage(systemName: "mic.fill", withConfiguration: micCfg), for: .normal)
+            voiceStatusLabel.isHidden = true
+            voiceButton.layer.removeAllAnimations()
+        }
+    }
+    
     private func setupTranslationUtilityButtons() {
         let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.spacing = 6
-        stack.distribution = .fillEqually
+        stack.axis = .horizontal; stack.spacing = 6; stack.distribution = .fillEqually
         stack.translatesAutoresizingMaskIntoConstraints = false
         translationContainer.addSubview(stack)
         
-        let bs = makeUtilButton(icon: "delete.left.fill", title: nil, action: #selector(backspaceTapped))
-        stack.addArrangedSubview(bs)
-        let sp = makeUtilButton(icon: nil, title: "space", action: #selector(spaceTapped))
-        stack.addArrangedSubview(sp)
-        let rt = makeUtilButton(icon: "return", title: nil, action: #selector(returnTapped))
-        stack.addArrangedSubview(rt)
+        stack.addArrangedSubview(makeUtilButton(icon: "delete.left.fill", title: nil, action: #selector(backspaceTapped)))
+        stack.addArrangedSubview(makeUtilButton(icon: nil, title: "space", action: #selector(spaceTapped)))
+        stack.addArrangedSubview(makeUtilButton(icon: "return", title: nil, action: #selector(returnTapped)))
         
         NSLayoutConstraint.activate([
             stack.leadingAnchor.constraint(equalTo: translationContainer.leadingAnchor, constant: 8),
@@ -693,9 +731,7 @@ class KeyboardViewController: UIInputViewController {
     
     private func makeUtilButton(icon: String?, title: String?, action: Selector) -> UIButton {
         let btn = UIButton(type: .custom)
-        btn.backgroundColor = buttonColor
-        btn.layer.cornerRadius = 8
-        btn.tintColor = textColor
+        btn.backgroundColor = buttonColor; btn.layer.cornerRadius = 8; btn.tintColor = textColor
         if let icon = icon {
             let cfg = UIImage.SymbolConfiguration(pointSize: 14, weight: .medium)
             btn.setImage(UIImage(systemName: icon, withConfiguration: cfg)?.withRenderingMode(.alwaysTemplate), for: .normal)
@@ -715,24 +751,22 @@ class KeyboardViewController: UIInputViewController {
     
     override func textDidChange(_ textInput: UITextInput?) {
         guard currentMode == .translation else { return }
-        
-        let currentText = readRecentText()
-        if !currentText.isEmpty && currentText != previousDocumentText {
-            previousDocumentText = currentText
-            inputPreviewLabel.text = currentText
+        let text = readRecentText()
+        if !text.isEmpty && text != previousDocumentText {
+            previousDocumentText = text
+            inputPreviewLabel.text = text
             inputPreviewLabel.textColor = textColor
-            
             autoTranslateTimer?.invalidate()
             if selectedLanguage.code != "none" {
                 translatedPreviewLabel.text = "Translating..."
                 translatedPreviewLabel.textColor = accentOrange
                 autoTranslateTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { [weak self] _ in
-                    self?.autoTranslatePreview(currentText)
+                    self?.autoTranslatePreview(text)
                 }
             }
         }
-        if currentText.isEmpty {
-            inputPreviewLabel.text = "Type or dictate, then tap Translate"
+        if text.isEmpty {
+            inputPreviewLabel.text = "Type, dictate, or tap 🎤 to speak"
             inputPreviewLabel.textColor = UIColor(white: 0.40, alpha: 1.0)
             translatedPreviewLabel.text = "Translation appears here"
             translatedPreviewLabel.textColor = UIColor(white: 0.40, alpha: 1.0)
@@ -755,7 +789,6 @@ class KeyboardViewController: UIInputViewController {
                 case .success(let t):
                     self?.translatedPreviewLabel.text = t
                     self?.translatedPreviewLabel.textColor = self?.accentGreen
-                    self?.lastTranslatedText = t
                 case .failure:
                     self?.translatedPreviewLabel.text = "Translation failed"
                     self?.translatedPreviewLabel.textColor = UIColor(red: 0.91, green: 0.30, blue: 0.24, alpha: 1)
@@ -768,39 +801,30 @@ class KeyboardViewController: UIInputViewController {
         if isLanguagePickerShown { hideLanguagePicker() }
         guard selectedLanguage.code != "none" else {
             translatedPreviewLabel.text = "Select a language first"
-            translatedPreviewLabel.textColor = accentOrange
-            return
+            translatedPreviewLabel.textColor = accentOrange; return
         }
         let text = readRecentText()
         guard !text.isEmpty else {
-            translatedPreviewLabel.text = "Type something first"
-            translatedPreviewLabel.textColor = accentOrange
-            return
+            translatedPreviewLabel.text = "Type or speak something first"
+            translatedPreviewLabel.textColor = accentOrange; return
         }
         
         translateButton.setTitle("Translating...", for: .normal)
-        translateButton.backgroundColor = accentOrange
-        translateButton.isEnabled = false
+        translateButton.backgroundColor = accentOrange; translateButton.isEnabled = false
         
         translationService.translate(text: text, to: selectedLanguage.code) { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 self.translateButton.setTitle("Translate & Replace", for: .normal)
-                self.translateButton.backgroundColor = self.primaryColor
-                self.translateButton.isEnabled = true
-                
+                self.translateButton.backgroundColor = self.primaryColor; self.translateButton.isEnabled = true
                 switch result {
                 case .success(let translated):
                     self.deleteCurrentLineText()
                     self.textDocumentProxy.insertText(translated)
                     self.translatedPreviewLabel.text = translated
                     self.translatedPreviewLabel.textColor = self.accentGreen
-                    UIView.animate(withDuration: 0.15) {
-                        self.translateButton.backgroundColor = self.accentGreen
-                    }
-                    UIView.animate(withDuration: 0.3, delay: 0.5) {
-                        self.translateButton.backgroundColor = self.primaryColor
-                    }
+                    UIView.animate(withDuration: 0.15) { self.translateButton.backgroundColor = self.accentGreen }
+                    UIView.animate(withDuration: 0.3, delay: 0.5) { self.translateButton.backgroundColor = self.primaryColor }
                 case .failure(let error):
                     self.translatedPreviewLabel.text = "Error: \(error.localizedDescription)"
                     self.translatedPreviewLabel.textColor = UIColor(red: 0.91, green: 0.30, blue: 0.24, alpha: 1)
@@ -814,9 +838,7 @@ class KeyboardViewController: UIInputViewController {
         let count: Int
         if let nl = before.lastIndex(of: "\n") {
             count = before.distance(from: before.index(after: nl), to: before.endIndex)
-        } else {
-            count = before.count
-        }
+        } else { count = before.count }
         for _ in 0..<count { textDocumentProxy.deleteBackward() }
     }
     
@@ -828,86 +850,133 @@ class KeyboardViewController: UIInputViewController {
     
     private func showLanguagePicker() {
         isLanguagePickerShown = true
-        let container = UIView()
-        container.backgroundColor = cardBgColor
-        container.layer.cornerRadius = 14
-        container.layer.borderWidth = 1
-        container.layer.borderColor = UIColor.white.withAlphaComponent(0.06).cgColor
-        container.translatesAutoresizingMaskIntoConstraints = false
-        container.clipsToBounds = true
-        translationContainer.addSubview(container)
-        languagePickerContainer = container
+        let c = UIView()
+        c.backgroundColor = cardBgColor; c.layer.cornerRadius = 14
+        c.layer.borderWidth = 1; c.layer.borderColor = UIColor.white.withAlphaComponent(0.06).cgColor
+        c.translatesAutoresizingMaskIntoConstraints = false; c.clipsToBounds = true
+        translationContainer.addSubview(c); languagePickerContainer = c
         
-        let header = UIView()
-        header.translatesAutoresizingMaskIntoConstraints = false
-        container.addSubview(header)
-        let title = UILabel()
-        title.text = "🌐 Select Language"
-        title.font = UIFont.systemFont(ofSize: 14, weight: .bold)
-        title.textColor = textColor
-        title.translatesAutoresizingMaskIntoConstraints = false
-        header.addSubview(title)
-        let close = UIButton(type: .custom)
-        close.setTitle("✕", for: .normal)
-        close.setTitleColor(secondaryTextColor, for: .normal)
-        close.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
-        close.translatesAutoresizingMaskIntoConstraints = false
-        close.addTarget(self, action: #selector(hideLanguagePicker), for: .touchUpInside)
-        header.addSubview(close)
+        let h = UIView(); h.translatesAutoresizingMaskIntoConstraints = false; c.addSubview(h)
+        let t = UILabel(); t.text = "🌐 Select Language"
+        t.font = UIFont.systemFont(ofSize: 14, weight: .bold); t.textColor = textColor
+        t.translatesAutoresizingMaskIntoConstraints = false; h.addSubview(t)
+        let x = UIButton(type: .custom); x.setTitle("✕", for: .normal)
+        x.setTitleColor(secondaryTextColor, for: .normal)
+        x.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        x.translatesAutoresizingMaskIntoConstraints = false
+        x.addTarget(self, action: #selector(hideLanguagePicker), for: .touchUpInside); h.addSubview(x)
         
         let layout = UICollectionViewFlowLayout()
-        layout.minimumInteritemSpacing = 5
-        layout.minimumLineSpacing = 5
+        layout.minimumInteritemSpacing = 5; layout.minimumLineSpacing = 5
         layout.sectionInset = UIEdgeInsets(top: 2, left: 8, bottom: 8, right: 8)
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = .clear
-        cv.translatesAutoresizingMaskIntoConstraints = false
-        cv.delegate = self
-        cv.dataSource = self
+        cv.backgroundColor = .clear; cv.translatesAutoresizingMaskIntoConstraints = false
+        cv.delegate = self; cv.dataSource = self
         cv.register(LanguageCell.self, forCellWithReuseIdentifier: "LanguageCell")
-        cv.indicatorStyle = .white
-        container.addSubview(cv)
-        languageCollectionView = cv
+        cv.indicatorStyle = .white; c.addSubview(cv); languageCollectionView = cv
         
         NSLayoutConstraint.activate([
-            container.topAnchor.constraint(equalTo: translationContainer.topAnchor, constant: 2),
-            container.leadingAnchor.constraint(equalTo: translationContainer.leadingAnchor, constant: 6),
-            container.trailingAnchor.constraint(equalTo: translationContainer.trailingAnchor, constant: -6),
-            container.bottomAnchor.constraint(equalTo: translationContainer.bottomAnchor, constant: -4),
-            header.topAnchor.constraint(equalTo: container.topAnchor),
-            header.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            header.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            header.heightAnchor.constraint(equalToConstant: 34),
-            title.centerYAnchor.constraint(equalTo: header.centerYAnchor),
-            title.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 12),
-            close.centerYAnchor.constraint(equalTo: header.centerYAnchor),
-            close.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -8),
-            close.widthAnchor.constraint(equalToConstant: 30),
-            close.heightAnchor.constraint(equalToConstant: 30),
-            cv.topAnchor.constraint(equalTo: header.bottomAnchor),
-            cv.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            cv.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            cv.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            c.topAnchor.constraint(equalTo: translationContainer.topAnchor, constant: 2),
+            c.leadingAnchor.constraint(equalTo: translationContainer.leadingAnchor, constant: 6),
+            c.trailingAnchor.constraint(equalTo: translationContainer.trailingAnchor, constant: -6),
+            c.bottomAnchor.constraint(equalTo: translationContainer.bottomAnchor, constant: -4),
+            h.topAnchor.constraint(equalTo: c.topAnchor), h.leadingAnchor.constraint(equalTo: c.leadingAnchor),
+            h.trailingAnchor.constraint(equalTo: c.trailingAnchor), h.heightAnchor.constraint(equalToConstant: 34),
+            t.centerYAnchor.constraint(equalTo: h.centerYAnchor), t.leadingAnchor.constraint(equalTo: h.leadingAnchor, constant: 12),
+            x.centerYAnchor.constraint(equalTo: h.centerYAnchor), x.trailingAnchor.constraint(equalTo: h.trailingAnchor, constant: -8),
+            x.widthAnchor.constraint(equalToConstant: 30), x.heightAnchor.constraint(equalToConstant: 30),
+            cv.topAnchor.constraint(equalTo: h.bottomAnchor), cv.leadingAnchor.constraint(equalTo: c.leadingAnchor),
+            cv.trailingAnchor.constraint(equalTo: c.trailingAnchor), cv.bottomAnchor.constraint(equalTo: c.bottomAnchor),
         ])
         
-        container.alpha = 0
-        container.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
-        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut) {
-            container.alpha = 1
-            container.transform = .identity
-        }
+        c.alpha = 0; c.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
+        UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseOut) { c.alpha = 1; c.transform = .identity }
     }
     
     @objc private func hideLanguagePicker() {
         isLanguagePickerShown = false
-        guard let container = languagePickerContainer else { return }
+        guard let c = languagePickerContainer else { return }
         UIView.animate(withDuration: 0.15, animations: {
-            container.alpha = 0
-            container.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
-        }) { _ in
-            container.removeFromSuperview()
-            self.languagePickerContainer = nil
-            self.languageCollectionView = nil
+            c.alpha = 0; c.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
+        }) { _ in c.removeFromSuperview(); self.languagePickerContainer = nil; self.languageCollectionView = nil }
+    }
+}
+
+// MARK: - SpeechTranslationDelegate
+
+extension KeyboardViewController: SpeechTranslationDelegate {
+    
+    func speechDidStart() {
+        if currentMode == .translation {
+            updateVoiceButtonState(listening: true)
+            inputPreviewLabel.text = "Listening..."
+            inputPreviewLabel.textColor = recordingColor
+        } else {
+            updateTypingMicState(listening: true)
+        }
+    }
+    
+    func speechDidRecognize(text: String, isFinal: Bool) {
+        recognizedText = text
+        
+        if currentMode == .translation {
+            // Show recognized text in preview
+            inputPreviewLabel.text = text
+            inputPreviewLabel.textColor = textColor
+            
+            if isFinal && selectedLanguage.code != "none" {
+                // Auto-translate the final result
+                translatedPreviewLabel.text = "Translating..."
+                translatedPreviewLabel.textColor = accentOrange
+                
+                translationService.translate(text: text, to: selectedLanguage.code) { [weak self] result in
+                    DispatchQueue.main.async {
+                        guard let self = self else { return }
+                        switch result {
+                        case .success(let translated):
+                            self.translatedPreviewLabel.text = translated
+                            self.translatedPreviewLabel.textColor = self.accentGreen
+                            // Insert translated text
+                            self.textDocumentProxy.insertText(translated)
+                        case .failure:
+                            self.translatedPreviewLabel.text = text
+                            self.translatedPreviewLabel.textColor = self.textColor
+                            // Insert original if translation fails
+                            self.textDocumentProxy.insertText(text)
+                        }
+                    }
+                }
+            } else if isFinal && selectedLanguage.code == "none" {
+                // No translation, just insert
+                textDocumentProxy.insertText(text)
+            }
+        } else {
+            // Typing mode: insert text directly as recognized
+            if isFinal {
+                textDocumentProxy.insertText(text + " ")
+            }
+        }
+    }
+    
+    func speechDidFail(error: String) {
+        if currentMode == .translation {
+            updateVoiceButtonState(listening: false)
+            inputPreviewLabel.text = "Error: \(error)"
+            inputPreviewLabel.textColor = recordingColor
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+                self?.inputPreviewLabel.text = "Type, dictate, or tap 🎤 to speak"
+                self?.inputPreviewLabel.textColor = UIColor(white: 0.40, alpha: 1.0)
+            }
+        } else {
+            updateTypingMicState(listening: false)
+        }
+    }
+    
+    func speechDidStop() {
+        if currentMode == .translation {
+            updateVoiceButtonState(listening: false)
+        } else {
+            updateTypingMicState(listening: false)
         }
     }
 }
@@ -918,8 +987,7 @@ extension KeyboardViewController: UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ cv: UICollectionView, numberOfItemsInSection section: Int) -> Int { SupportedLanguages.all.count }
     func collectionView(_ cv: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = cv.dequeueReusableCell(withReuseIdentifier: "LanguageCell", for: indexPath) as! LanguageCell
-        let lang = SupportedLanguages.all[indexPath.item]
-        cell.configure(with: lang, isSelected: lang == selectedLanguage)
+        cell.configure(with: SupportedLanguages.all[indexPath.item], isSelected: SupportedLanguages.all[indexPath.item] == selectedLanguage)
         return cell
     }
     func collectionView(_ cv: UICollectionView, layout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -927,10 +995,9 @@ extension KeyboardViewController: UICollectionViewDelegate, UICollectionViewData
     }
     func collectionView(_ cv: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectedLanguage = SupportedLanguages.all[indexPath.item]
-        saveLanguagePreference()
-        updateLanguageButtonTitle()
-        let text = readRecentText()
-        if !text.isEmpty && selectedLanguage.code != "none" { autoTranslatePreview(text) }
+        saveLanguagePreference(); updateLanguageButtonTitle()
+        let t = readRecentText()
+        if !t.isEmpty && selectedLanguage.code != "none" { autoTranslatePreview(t) }
         else {
             translatedPreviewLabel.text = "Translation appears here"
             translatedPreviewLabel.textColor = UIColor(white: 0.40, alpha: 1.0)
@@ -950,18 +1017,12 @@ class LanguageCell: UICollectionViewCell {
         contentView.backgroundColor = UIColor(red: 0.22, green: 0.24, blue: 0.31, alpha: 1.0)
         contentView.layer.cornerRadius = 8
         flagLabel.font = UIFont.systemFont(ofSize: 16)
-        flagLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(flagLabel)
-        nameLabel.font = UIFont.systemFont(ofSize: 11, weight: .medium)
-        nameLabel.textColor = .white
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(nameLabel)
-        checkmark.text = "✓"
-        checkmark.font = UIFont.systemFont(ofSize: 12, weight: .bold)
+        flagLabel.translatesAutoresizingMaskIntoConstraints = false; contentView.addSubview(flagLabel)
+        nameLabel.font = UIFont.systemFont(ofSize: 11, weight: .medium); nameLabel.textColor = .white
+        nameLabel.translatesAutoresizingMaskIntoConstraints = false; contentView.addSubview(nameLabel)
+        checkmark.text = "✓"; checkmark.font = UIFont.systemFont(ofSize: 12, weight: .bold)
         checkmark.textColor = UIColor(red: 0.30, green: 0.78, blue: 0.55, alpha: 1.0)
-        checkmark.translatesAutoresizingMaskIntoConstraints = false
-        checkmark.isHidden = true
-        contentView.addSubview(checkmark)
+        checkmark.translatesAutoresizingMaskIntoConstraints = false; checkmark.isHidden = true; contentView.addSubview(checkmark)
         NSLayoutConstraint.activate([
             flagLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
             flagLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -973,25 +1034,10 @@ class LanguageCell: UICollectionViewCell {
         ])
     }
     required init?(coder: NSCoder) { fatalError() }
-    func configure(with language: Language, isSelected: Bool) {
-        flagLabel.text = language.flag
-        nameLabel.text = language.name
-        checkmark.isHidden = !isSelected
-        if isSelected {
-            contentView.backgroundColor = UIColor(red: 0.29, green: 0.56, blue: 0.89, alpha: 0.3)
-            contentView.layer.borderWidth = 1
-            contentView.layer.borderColor = UIColor(red: 0.29, green: 0.56, blue: 0.89, alpha: 0.5).cgColor
-        } else {
-            contentView.backgroundColor = UIColor(red: 0.22, green: 0.24, blue: 0.31, alpha: 1.0)
-            contentView.layer.borderWidth = 0
-        }
-    }
-}
-
-// MARK: - UIColor Extension
-
-private extension UIColor {
-    func opacity(_ value: CGFloat) -> UIColor {
-        return self.withAlphaComponent(value)
+    func configure(with lang: Language, isSelected: Bool) {
+        flagLabel.text = lang.flag; nameLabel.text = lang.name; checkmark.isHidden = !isSelected
+        contentView.backgroundColor = isSelected ? UIColor(red: 0.29, green: 0.56, blue: 0.89, alpha: 0.3) : UIColor(red: 0.22, green: 0.24, blue: 0.31, alpha: 1.0)
+        contentView.layer.borderWidth = isSelected ? 1 : 0
+        contentView.layer.borderColor = isSelected ? UIColor(red: 0.29, green: 0.56, blue: 0.89, alpha: 0.5).cgColor : nil
     }
 }

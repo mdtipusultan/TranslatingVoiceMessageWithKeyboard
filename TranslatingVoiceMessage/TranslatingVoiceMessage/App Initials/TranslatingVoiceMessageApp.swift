@@ -11,8 +11,8 @@ import SwiftUI
 struct TranslatingVoiceMessageApp: App {
     var body: some Scene {
         WindowGroup {
-            //ContentView()
-            PermissionInstructionView()
+            //PermissionInstructionView()
+            MainTabView()
         }
     }
 }

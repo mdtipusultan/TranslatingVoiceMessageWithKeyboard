@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CEF46D222F79B55200EE3309 /* Translate Voice Message Keyboard.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CEF46D1B2F79B55200EE3309 /* Translate Voice Message Keyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CEF46D4E2F7E04DC00EE3309 /* TranslateVoiceShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CEF46D442F7E04DC00EE3309 /* TranslateVoiceShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -18,6 +19,13 @@
 			remoteGlobalIDString = CEF46D1A2F79B55200EE3309;
 			remoteInfo = "Translate Voice Message Keyboard";
 		};
+		CEF46D4C2F7E04DC00EE3309 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEF46CFB2F79B44C00EE3309 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CEF46D432F7E04DC00EE3309;
+			remoteInfo = TranslateVoiceShare;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,6 +35,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				CEF46D4E2F7E04DC00EE3309 /* TranslateVoiceShare.appex in Embed Foundation Extensions */,
 				CEF46D222F79B55200EE3309 /* Translate Voice Message Keyboard.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
@@ -37,6 +46,7 @@
 /* Begin PBXFileReference section */
 		CEF46D032F79B44C00EE3309 /* TranslatingVoiceMessage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TranslatingVoiceMessage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEF46D1B2F79B55200EE3309 /* Translate Voice Message Keyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Translate Voice Message Keyboard.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEF46D442F7E04DC00EE3309 /* TranslateVoiceShare.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TranslateVoiceShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -54,6 +64,27 @@
 			);
 			target = CEF46D022F79B44C00EE3309 /* TranslatingVoiceMessage */;
 		};
+		CEF46D522F7E04DC00EE3309 /* Exceptions for "TranslateVoiceShare" folder in "TranslateVoiceShare" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CEF46D432F7E04DC00EE3309 /* TranslateVoiceShare */;
+		};
+		CEF46D542F7E056600EE3309 /* Exceptions for "Translate Voice Message Keyboard" folder in "TranslateVoiceShare" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				TranslationService/TranslationService.swift,
+			);
+			target = CEF46D432F7E04DC00EE3309 /* TranslateVoiceShare */;
+		};
+		CEF46D5A2F7E178600EE3309 /* Exceptions for "Translate Voice Message Keyboard" folder in "TranslatingVoiceMessage" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				TranslationService/TranslationService.swift,
+			);
+			target = CEF46D022F79B44C00EE3309 /* TranslatingVoiceMessage */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -68,9 +99,19 @@
 		CEF46D1C2F79B55200EE3309 /* Translate Voice Message Keyboard */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				CEF46D5A2F7E178600EE3309 /* Exceptions for "Translate Voice Message Keyboard" folder in "TranslatingVoiceMessage" target */,
 				CEF46D232F79B55200EE3309 /* Exceptions for "Translate Voice Message Keyboard" folder in "Translate Voice Message Keyboard" target */,
+				CEF46D542F7E056600EE3309 /* Exceptions for "Translate Voice Message Keyboard" folder in "TranslateVoiceShare" target */,
 			);
 			path = "Translate Voice Message Keyboard";
+			sourceTree = "<group>";
+		};
+		CEF46D452F7E04DC00EE3309 /* TranslateVoiceShare */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CEF46D522F7E04DC00EE3309 /* Exceptions for "TranslateVoiceShare" folder in "TranslateVoiceShare" target */,
+			);
+			path = TranslateVoiceShare;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -90,6 +131,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CEF46D412F7E04DC00EE3309 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -98,6 +146,7 @@
 			children = (
 				CEF46D052F79B44C00EE3309 /* TranslatingVoiceMessage */,
 				CEF46D1C2F79B55200EE3309 /* Translate Voice Message Keyboard */,
+				CEF46D452F7E04DC00EE3309 /* TranslateVoiceShare */,
 				CEF46D042F79B44C00EE3309 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -107,6 +156,7 @@
 			children = (
 				CEF46D032F79B44C00EE3309 /* TranslatingVoiceMessage.app */,
 				CEF46D1B2F79B55200EE3309 /* Translate Voice Message Keyboard.appex */,
+				CEF46D442F7E04DC00EE3309 /* TranslateVoiceShare.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -127,6 +177,7 @@
 			);
 			dependencies = (
 				CEF46D212F79B55200EE3309 /* PBXTargetDependency */,
+				CEF46D4D2F7E04DC00EE3309 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				CEF46D052F79B44C00EE3309 /* TranslatingVoiceMessage */,
@@ -160,6 +211,28 @@
 			productReference = CEF46D1B2F79B55200EE3309 /* Translate Voice Message Keyboard.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		CEF46D432F7E04DC00EE3309 /* TranslateVoiceShare */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CEF46D4F2F7E04DC00EE3309 /* Build configuration list for PBXNativeTarget "TranslateVoiceShare" */;
+			buildPhases = (
+				CEF46D402F7E04DC00EE3309 /* Sources */,
+				CEF46D412F7E04DC00EE3309 /* Frameworks */,
+				CEF46D422F7E04DC00EE3309 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				CEF46D452F7E04DC00EE3309 /* TranslateVoiceShare */,
+			);
+			name = TranslateVoiceShare;
+			packageProductDependencies = (
+			);
+			productName = TranslateVoiceShare;
+			productReference = CEF46D442F7E04DC00EE3309 /* TranslateVoiceShare.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -174,6 +247,9 @@
 						CreatedOnToolsVersion = 16.0;
 					};
 					CEF46D1A2F79B55200EE3309 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					CEF46D432F7E04DC00EE3309 = {
 						CreatedOnToolsVersion = 16.0;
 					};
 				};
@@ -194,6 +270,7 @@
 			targets = (
 				CEF46D022F79B44C00EE3309 /* TranslatingVoiceMessage */,
 				CEF46D1A2F79B55200EE3309 /* Translate Voice Message Keyboard */,
+				CEF46D432F7E04DC00EE3309 /* TranslateVoiceShare */,
 			);
 		};
 /* End PBXProject section */
@@ -207,6 +284,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CEF46D192F79B55200EE3309 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEF46D422F7E04DC00EE3309 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -230,6 +314,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CEF46D402F7E04DC00EE3309 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -237,6 +328,11 @@
 			isa = PBXTargetDependency;
 			target = CEF46D1A2F79B55200EE3309 /* Translate Voice Message Keyboard */;
 			targetProxy = CEF46D202F79B55200EE3309 /* PBXContainerItemProxy */;
+		};
+		CEF46D4D2F7E04DC00EE3309 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CEF46D432F7E04DC00EE3309 /* TranslateVoiceShare */;
+			targetProxy = CEF46D4C2F7E04DC00EE3309 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -476,6 +572,56 @@
 			};
 			name = Release;
 		};
+		CEF46D502F7E04DC00EE3309 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4NG5UXJYS8;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TranslateVoiceShare/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TranslateVoiceShare;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.office.TranslatingVoiceMessage.TranslateVoiceShare;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CEF46D512F7E04DC00EE3309 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4NG5UXJYS8;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TranslateVoiceShare/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TranslateVoiceShare;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.office.TranslatingVoiceMessage.TranslateVoiceShare;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -502,6 +648,15 @@
 			buildConfigurations = (
 				CEF46D252F79B55200EE3309 /* Debug */,
 				CEF46D262F79B55200EE3309 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CEF46D4F2F7E04DC00EE3309 /* Build configuration list for PBXNativeTarget "TranslateVoiceShare" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CEF46D502F7E04DC00EE3309 /* Debug */,
+				CEF46D512F7E04DC00EE3309 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

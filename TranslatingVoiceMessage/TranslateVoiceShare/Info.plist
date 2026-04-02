@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+    SHARE EXTENSION Info.plist
+    
+    Add this as a new "Share Extension" target in Xcode:
+      File → New → Target → Share Extension
+    Then replace the generated Info.plist with this file.
+-->
+<plist version="1.0">
+<dict>
+    <key>NSExtension</key>
+    <dict>
+        <key>NSExtensionAttributes</key>
+        <dict>
+            <!--
+                Accept any shared item. We filter in code.
+                Using TRUEPREDICATE during development to ensure
+                the share extension appears for all content types.
+                
+                For production, replace with a proper predicate:
+                SUBQUERY(extensionItems, $e, SUBQUERY($e.attachments, $a,
+                    ANY $a.registeredTypeIdentifiers UTI-CONFORMS-TO "public.audio" OR
+                    ANY $a.registeredTypeIdentifiers UTI-CONFORMS-TO "public.movie"
+                ).@count > 0).@count > 0
+            -->
+            <key>NSExtensionActivationRule</key>
+            <string>TRUEPREDICATE</string>
+        </dict>
+
+        <key>NSExtensionPointIdentifier</key>
+        <string>com.apple.share-services</string>
+
+        <key>NSExtensionPrincipalClass</key>
+        <string>$(PRODUCT_MODULE_NAME).ShareViewController</string>
+    </dict>
+
+    <!-- Speech recognition permission -->
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>This extension uses speech recognition to transcribe voice messages for translation.</string>
+    
+    <!-- Microphone permission (may be needed for some speech recognition paths) -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This extension may need microphone access for speech processing.</string>
+</dict>
+</plist>

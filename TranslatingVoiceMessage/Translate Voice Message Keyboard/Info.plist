@@ -27,6 +27,10 @@
 
     <!-- REQUIRED: Microphone usage description -->
     <key>NSMicrophoneUsageDescription</key>
-    <string>This keyboard needs microphone access to convert your speech to text using AssemblyAI.</string>
+    <string>This keyboard needs microphone access for voice-to-text translation.</string>
+
+    <!-- REQUIRED: Speech recognition usage description -->
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>This keyboard uses speech recognition to convert your voice to text for translation.</string>
 </dict>
 </plist>
