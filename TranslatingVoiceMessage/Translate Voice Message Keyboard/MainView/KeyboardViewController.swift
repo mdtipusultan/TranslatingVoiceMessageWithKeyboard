@@ -178,7 +178,7 @@ class KeyboardViewController: UIInputViewController {
         modeToggleContainer.addSubview(toggleIndicator)
         
         typingModeBtn = UIButton(type: .custom)
-        typingModeBtn.setTitle("⌨ Typing", for: .normal)
+        typingModeBtn.setTitle(NSLocalizedString("keyboard.mode.typing", comment: ""), for: .normal)
         typingModeBtn.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: .bold)
         typingModeBtn.setTitleColor(.white, for: .normal)
         typingModeBtn.translatesAutoresizingMaskIntoConstraints = false
@@ -186,7 +186,7 @@ class KeyboardViewController: UIInputViewController {
         modeToggleContainer.addSubview(typingModeBtn)
         
         translationModeBtn = UIButton(type: .custom)
-        translationModeBtn.setTitle("🌐 Translate", for: .normal)
+        translationModeBtn.setTitle(NSLocalizedString("keyboard.mode.translate", comment: ""), for: .normal)
         translationModeBtn.titleLabel?.font = UIFont.systemFont(ofSize: 12, weight: .bold)
         translationModeBtn.setTitleColor(UIColor.white.withAlphaComponent(0.45), for: .normal)
         translationModeBtn.translatesAutoresizingMaskIntoConstraints = false
@@ -382,7 +382,7 @@ class KeyboardViewController: UIInputViewController {
         
         // Space
         let spaceBtn = UIButton(type: .custom)
-        spaceBtn.setTitle("space", for: .normal)
+        spaceBtn.setTitle(NSLocalizedString("keyboard.space", comment: ""), for: .normal)
         spaceBtn.setTitleColor(textColor, for: .normal)
         spaceBtn.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         spaceBtn.backgroundColor = keyColor; spaceBtn.layer.cornerRadius = 6
@@ -391,7 +391,7 @@ class KeyboardViewController: UIInputViewController {
         
         // Return
         let retBtn = UIButton(type: .custom)
-        retBtn.setTitle("return", for: .normal)
+        retBtn.setTitle(NSLocalizedString("keyboard.return", comment: ""), for: .normal)
         retBtn.setTitleColor(.white, for: .normal)
         retBtn.titleLabel?.font = UIFont.systemFont(ofSize: 13, weight: .bold)
         retBtn.backgroundColor = primaryColor; retBtn.layer.cornerRadius = 6
@@ -514,9 +514,10 @@ class KeyboardViewController: UIInputViewController {
     
     private func updateLanguageButtonTitle() {
         if selectedLanguage.code == "none" {
-            languageButton?.setTitle("🔤  No translation selected", for: .normal)
+            languageButton?.setTitle(NSLocalizedString("keyboard.language.none", comment: ""), for: .normal)
         } else {
-            languageButton?.setTitle("\(selectedLanguage.flag)  Translate to: \(selectedLanguage.name)", for: .normal)
+            let format = NSLocalizedString("keyboard.language.translate_to", comment: "")
+            languageButton?.setTitle(String(format: format, selectedLanguage.name), for: .normal)
         }
     }
     
@@ -528,14 +529,14 @@ class KeyboardViewController: UIInputViewController {
         translationContainer.addSubview(container)
         
         let origLabel = UILabel()
-        origLabel.text = "ORIGINAL"
+        origLabel.text = NSLocalizedString("voice.label.original", comment: "")
         origLabel.font = UIFont.systemFont(ofSize: 9, weight: .bold)
         origLabel.textColor = secondaryTextColor
         origLabel.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(origLabel)
         
         inputPreviewLabel = UILabel()
-        inputPreviewLabel.text = "Type, dictate, or tap 🎤 to speak"
+        inputPreviewLabel.text = NSLocalizedString("keyboard.preview.placeholder", comment: "")
         inputPreviewLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         inputPreviewLabel.textColor = UIColor(white: 0.40, alpha: 1.0)
         inputPreviewLabel.numberOfLines = 2
@@ -548,14 +549,14 @@ class KeyboardViewController: UIInputViewController {
         container.addSubview(sep)
         
         let transLabel = UILabel()
-        transLabel.text = "TRANSLATED"
+        transLabel.text = NSLocalizedString("voice.label.translated", comment: "")
         transLabel.font = UIFont.systemFont(ofSize: 9, weight: .bold)
         transLabel.textColor = accentGreen.withAlphaComponent(0.7)
         transLabel.translatesAutoresizingMaskIntoConstraints = false
         container.addSubview(transLabel)
         
         translatedPreviewLabel = UILabel()
-        translatedPreviewLabel.text = "Translation appears here"
+        translatedPreviewLabel.text = NSLocalizedString("keyboard.preview.translation", comment: "")
         translatedPreviewLabel.font = UIFont.systemFont(ofSize: 13, weight: .medium)
         translatedPreviewLabel.textColor = UIColor(white: 0.40, alpha: 1.0)
         translatedPreviewLabel.numberOfLines = 2
@@ -615,7 +616,7 @@ class KeyboardViewController: UIInputViewController {
         translateButton.translatesAutoresizingMaskIntoConstraints = false
         translateButton.backgroundColor = primaryColor
         translateButton.layer.cornerRadius = 10
-        translateButton.setTitle("Translate & Replace", for: .normal)
+        translateButton.setTitle(NSLocalizedString("keyboard.button.translate_replace", comment: ""), for: .normal)
         translateButton.setTitleColor(.white, for: .normal)
         translateButton.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .bold)
         let gIcon = UIImage(systemName: "globe", withConfiguration: UIImage.SymbolConfiguration(pointSize: 14, weight: .bold))
@@ -701,7 +702,7 @@ class KeyboardViewController: UIInputViewController {
         translationContainer.addSubview(stack)
         
         stack.addArrangedSubview(makeUtilButton(icon: "delete.left.fill", title: nil, action: #selector(backspaceTapped)))
-        stack.addArrangedSubview(makeUtilButton(icon: nil, title: "space", action: #selector(spaceTapped)))
+        stack.addArrangedSubview(makeUtilButton(icon: nil, title: NSLocalizedString("keyboard.space", comment: ""), action: #selector(spaceTapped)))
         stack.addArrangedSubview(makeUtilButton(icon: "return", title: nil, action: #selector(returnTapped)))
         
         NSLayoutConstraint.activate([
@@ -741,7 +742,7 @@ class KeyboardViewController: UIInputViewController {
             inputPreviewLabel.textColor = textColor
             autoTranslateTimer?.invalidate()
             if selectedLanguage.code != "none" {
-                translatedPreviewLabel.text = "Translating..."
+                translatedPreviewLabel.text = NSLocalizedString("keyboard.preview.translating", comment: "")
                 translatedPreviewLabel.textColor = accentOrange
                 autoTranslateTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: false) { [weak self] _ in
                     self?.autoTranslatePreview(text)
@@ -749,9 +750,9 @@ class KeyboardViewController: UIInputViewController {
             }
         }
         if text.isEmpty {
-            inputPreviewLabel.text = "Type, dictate, or tap 🎤 to speak"
+            inputPreviewLabel.text = NSLocalizedString("keyboard.preview.placeholder", comment: "")
             inputPreviewLabel.textColor = UIColor(white: 0.40, alpha: 1.0)
-            translatedPreviewLabel.text = "Translation appears here"
+            translatedPreviewLabel.text = NSLocalizedString("keyboard.preview.translation", comment: "")
             translatedPreviewLabel.textColor = UIColor(white: 0.40, alpha: 1.0)
         }
     }
@@ -773,7 +774,7 @@ class KeyboardViewController: UIInputViewController {
                     self?.translatedPreviewLabel.text = t
                     self?.translatedPreviewLabel.textColor = self?.accentGreen
                 case .failure:
-                    self?.translatedPreviewLabel.text = "Translation failed"
+                    self?.translatedPreviewLabel.text = NSLocalizedString("keyboard.preview.failed", comment: "")
                     self?.translatedPreviewLabel.textColor = UIColor(red: 0.91, green: 0.30, blue: 0.24, alpha: 1)
                 }
             }
@@ -783,22 +784,22 @@ class KeyboardViewController: UIInputViewController {
     @objc private func translateTapped() {
         if isLanguagePickerShown { hideLanguagePicker() }
         guard selectedLanguage.code != "none" else {
-            translatedPreviewLabel.text = "Select a language first"
+            translatedPreviewLabel.text = NSLocalizedString("keyboard.button.select_language", comment: "")
             translatedPreviewLabel.textColor = accentOrange; return
         }
         let text = readRecentText()
         guard !text.isEmpty else {
-            translatedPreviewLabel.text = "Type or speak something first"
+            translatedPreviewLabel.text = NSLocalizedString("keyboard.button.type_something", comment: "")
             translatedPreviewLabel.textColor = accentOrange; return
         }
         
-        translateButton.setTitle("Translating...", for: .normal)
+        translateButton.setTitle(NSLocalizedString("keyboard.button.translating", comment: ""), for: .normal)
         translateButton.backgroundColor = accentOrange; translateButton.isEnabled = false
         
         translationService.translate(text: text, to: selectedLanguage.code) { [weak self] result in
             DispatchQueue.main.async {
                 guard let self = self else { return }
-                self.translateButton.setTitle("Translate & Replace", for: .normal)
+                self.translateButton.setTitle(NSLocalizedString("keyboard.button.translate_replace", comment: ""), for: .normal)
                 self.translateButton.backgroundColor = self.primaryColor; self.translateButton.isEnabled = true
                 switch result {
                 case .success(let translated):
@@ -809,7 +810,8 @@ class KeyboardViewController: UIInputViewController {
                     UIView.animate(withDuration: 0.15) { self.translateButton.backgroundColor = self.accentGreen }
                     UIView.animate(withDuration: 0.3, delay: 0.5) { self.translateButton.backgroundColor = self.primaryColor }
                 case .failure(let error):
-                    self.translatedPreviewLabel.text = "Error: \(error.localizedDescription)"
+                    let format = NSLocalizedString("error.translation_failed", comment: "")
+                    self.translatedPreviewLabel.text = String(format: format, error.localizedDescription)
                     self.translatedPreviewLabel.textColor = UIColor(red: 0.91, green: 0.30, blue: 0.24, alpha: 1)
                 }
             }
@@ -840,10 +842,10 @@ class KeyboardViewController: UIInputViewController {
         translationContainer.addSubview(c); languagePickerContainer = c
         
         let h = UIView(); h.translatesAutoresizingMaskIntoConstraints = false; c.addSubview(h)
-        let t = UILabel(); t.text = "🌐 Select Language"
+        let t = UILabel(); t.text = NSLocalizedString("picker.title", comment: "")
         t.font = UIFont.systemFont(ofSize: 14, weight: .bold); t.textColor = textColor
         t.translatesAutoresizingMaskIntoConstraints = false; h.addSubview(t)
-        let x = UIButton(type: .custom); x.setTitle("✕", for: .normal)
+        let x = UIButton(type: .custom); x.setTitle(NSLocalizedString("picker.close", comment: ""), for: .normal)
         x.setTitleColor(secondaryTextColor, for: .normal)
         x.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .bold)
         x.translatesAutoresizingMaskIntoConstraints = false
@@ -904,7 +906,7 @@ extension KeyboardViewController: UICollectionViewDelegate, UICollectionViewData
         let t = readRecentText()
         if !t.isEmpty && selectedLanguage.code != "none" { autoTranslatePreview(t) }
         else {
-            translatedPreviewLabel.text = "Translation appears here"
+            translatedPreviewLabel.text = NSLocalizedString("keyboard.preview.translation", comment: "")
             translatedPreviewLabel.textColor = UIColor(white: 0.40, alpha: 1.0)
         }
         hideLanguagePicker()
