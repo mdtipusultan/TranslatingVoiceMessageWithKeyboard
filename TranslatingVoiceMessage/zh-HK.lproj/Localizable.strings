@@ -1,0 +1,119 @@
+/* ============================================================
+   Localizable.strings (English)
+   TranslatingVoiceMessage
+   ============================================================ */
+
+// MARK: - Tab Bar
+"tab.translate"     = "Translate";
+"tab.keyboard"      = "Keyboard";
+"tab.settings"      = "Settings";
+
+// MARK: - Voice Translation View
+"voice.title"                   = "Voice Translator";
+"voice.subtitle"                = "Speak and translate in real-time";
+"voice.status.tap_to_start"     = "Tap the microphone to start";
+"voice.status.listening"        = "🔴 Listening... Tap to stop";
+"voice.status.tap_to_record"    = "Tap mic to record again";
+"voice.banner.from_keyboard"    = "Opened from keyboard — speak now!";
+"voice.label.original"          = "ORIGINAL";
+"voice.label.translated"        = "TRANSLATED";
+"voice.placeholder.speech"      = "Your speech will appear here...";
+"voice.placeholder.translation" = "Translation will appear here...";
+"voice.translating"             = "Translating to %@...";
+"voice.copy_translation"        = "Copy Translation";
+"voice.copied"                  = "Copied!";
+"voice.translate_to"            = "Translate to %@";
+"voice.clear"                   = "Clear & Start Over";
+"voice.translate_to_label"      = "Translate to";
+
+// MARK: - Language Picker
+"picker.title"      = "🌐 Select Language";
+"picker.close"      = "Close";
+
+// MARK: - Settings View
+"settings.title"                    = "Settings";
+"settings.subtitle"                 = "Configure your translation preferences";
+"settings.app_name"                 = "Voice Translator";
+"settings.version"                  = "Version 1.0";
+"settings.section.features"         = "FEATURES";
+"settings.section.translation"      = "TRANSLATION";
+"settings.section.help"             = "HELP";
+"settings.feature.voice"            = "Voice Translation";
+"settings.feature.voice_sub"        = "Speak & translate in real-time";
+"settings.feature.keyboard"         = "Translation Keyboard";
+"settings.feature.keyboard_sub"     = "Translate while typing in any app";
+"settings.feature.share"            = "Share Extension";
+"settings.feature.share_sub"        = "Translate voice messages from chats";
+"settings.info.languages"           = "Languages";
+"settings.info.languages_value"     = "65+";
+"settings.info.speech_engine"       = "Speech Engine";
+"settings.info.speech_engine_value" = "Apple On-Device";
+"settings.info.translation_api"     = "Translation API";
+"settings.info.translation_api_value" = "MyMemory (Free)";
+"settings.help.system_settings"     = "Open System Settings";
+"settings.help.how_to_use"          = "How to use the keyboard";
+"settings.footer"                   = "Translation powered by MyMemory API\nSpeech recognition by Apple";
+
+// MARK: - Permission / Keyboard Setup View
+"permission.title"          = "Keyboard Access\nRequired";
+"permission.subtitle"       = "Enable keyboard permissions for the\nbest translation experience";
+"permission.step1.title"    = "Open Settings";
+"permission.step1.sub"      = "Tap the button below to go to Settings";
+"permission.step2.title"    = "Keyboards";
+"permission.step2.sub"      = "Go to General → Keyboard → Keyboards";
+"permission.step3.title"    = "Enable Access";
+"permission.step3.sub"      = "Turn on TranslatingVoiceMessage and Allow Full Access";
+"permission.cta"            = "Open Settings";
+"permission.later"          = "I'll do this later";
+
+// MARK: - Share Extension
+"share.title"                   = "Voice Translator";
+"share.status.extracting"       = "Extracting audio...";
+"share.status.transcribing"     = "Transcribing voice message...";
+"share.status.listening"        = "Listening to voice message...";
+"share.status.translating"      = "Translating to %@ %@...";
+"share.label.original"          = "ORIGINAL";
+"share.label.translated"        = "TRANSLATED";
+"share.label.translation_failed"= "TRANSLATION FAILED — SHOWING ORIGINAL";
+"share.copy"                    = "Copy Translation";
+"share.copied"                  = "Copied! ✓";
+"share.translate_to"            = "Translate to: %@";
+"share.error.no_audio"          = "No audio file found. Share a voice message to translate.";
+"share.error.unsupported"       = "Unsupported file format. Try sharing an audio or voice message.";
+"share.error.no_speech"         = "No speech detected in voice message";
+"share.error.permission_denied" = "Speech recognition permission denied. Enable in Settings → Privacy → Speech Recognition.";
+"share.error.permission_req"    = "Speech recognition permission required";
+"share.error.unavailable"       = "Speech recognition is not available for your language";
+"share.error.save_failed"       = "Failed to save audio file";
+"share.error.read_failed"       = "Could not read the audio file. Try saving it locally first, then sharing.";
+
+// MARK: - Keyboard Extension
+"keyboard.mode.typing"              = "⌨ Typing";
+"keyboard.mode.translate"           = "🌐 Translate";
+"keyboard.language.none"            = "🔤  No translation selected";
+"keyboard.language.translate_to"    = "Translate to: %@";
+"keyboard.preview.placeholder"      = "Type, dictate, or tap 🎤 to speak";
+"keyboard.preview.translation"      = "Translation appears here";
+"keyboard.preview.translating"      = "Translating...";
+"keyboard.preview.failed"           = "Translation failed";
+"keyboard.button.translate_replace" = "Translate & Replace";
+"keyboard.button.translating"       = "Translating...";
+"keyboard.button.select_language"   = "Select a language first";
+"keyboard.button.type_something"    = "Type or speak something first";
+"keyboard.space"                    = "space";
+"keyboard.return"                   = "return";
+
+// MARK: - Speech / Audio Errors
+"error.speech_unavailable"  = "Speech recognition unavailable";
+"error.audio_session"       = "Audio session error: %@";
+"error.audio_engine"        = "Audio engine error: %@";
+"error.mic_unavailable"     = "Microphone not available";
+"error.mic_failed"          = "Microphone failed. Close keyboard and try again.";
+"error.permission_denied"   = "Speech recognition permission denied";
+"error.transcription"       = "Could not transcribe: %@";
+
+// MARK: - Translation Errors
+"error.translation_invalid_url"  = "Invalid URL";
+"error.translation_no_data"      = "No data received";
+"error.translation_invalid_resp" = "Invalid response";
+"error.translation_failed"       = "Translation failed: %@";

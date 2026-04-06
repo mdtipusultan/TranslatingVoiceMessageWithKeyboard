@@ -2,7 +2,7 @@
 //  TranslatingVoiceMessageApp.swift
 //  TranslatingVoiceMessage
 //
-//  Created by MacBook Pro M1 Pro on 3/30/26.
+//  Created by Tipu Sultan on 3/30/26.
 //
 
 import SwiftUI
@@ -11,7 +11,6 @@ import SwiftUI
 struct TranslatingVoiceMessageApp: App {
     var body: some Scene {
         WindowGroup {
-            //PermissionInstructionView()
             MainTabView()
         }
     }

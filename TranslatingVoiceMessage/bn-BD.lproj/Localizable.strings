@@ -1,0 +1,108 @@
+/* ============================================================
+   Localizable.strings (Bengali — বাংলা)
+   ============================================================ */
+
+"tab.translate"     = "অনুবাদ";
+"tab.keyboard"      = "কীবোর্ড";
+"tab.settings"      = "সেটিংস";
+
+"voice.title"                   = "ভয়েস ট্রান্সলেটর";
+"voice.subtitle"                = "বলুন এবং রিয়েল-টাইমে অনুবাদ করুন";
+"voice.status.tap_to_start"     = "শুরু করতে মাইক্রোফোনে ট্যাপ করুন";
+"voice.status.listening"        = "🔴 শুনছি... থামাতে ট্যাপ করুন";
+"voice.status.tap_to_record"    = "আবার রেকর্ড করতে মাইক ট্যাপ করুন";
+"voice.banner.from_keyboard"    = "কীবোর্ড থেকে খোলা হয়েছে — এখন বলুন!";
+"voice.label.original"          = "মূল";
+"voice.label.translated"        = "অনুবাদিত";
+"voice.placeholder.speech"      = "আপনার কথা এখানে দেখাবে...";
+"voice.placeholder.translation" = "অনুবাদ এখানে দেখাবে...";
+"voice.translating"             = "%@ ভাষায় অনুবাদ হচ্ছে...";
+"voice.copy_translation"        = "অনুবাদ কপি করুন";
+"voice.copied"                  = "কপি হয়েছে!";
+"voice.translate_to"            = "%@ ভাষায় অনুবাদ করুন";
+"voice.clear"                   = "মুছুন ও নতুন শুরু করুন";
+"voice.translate_to_label"      = "অনুবাদ করুন";
+
+"picker.title"      = "🌐 ভাষা বেছে নিন";
+"picker.close"      = "বন্ধ করুন";
+
+"settings.title"                    = "সেটিংস";
+"settings.subtitle"                 = "অনুবাদ পছন্দ সেট করুন";
+"settings.app_name"                 = "ভয়েস ট্রান্সলেটর";
+"settings.version"                  = "সংস্করণ ১.০";
+"settings.section.features"         = "বৈশিষ্ট্য";
+"settings.section.translation"      = "অনুবাদ";
+"settings.section.help"             = "সাহায্য";
+"settings.feature.voice"            = "ভয়েস অনুবাদ";
+"settings.feature.voice_sub"        = "বলুন এবং রিয়েল-টাইমে অনুবাদ করুন";
+"settings.feature.keyboard"         = "অনুবাদ কীবোর্ড";
+"settings.feature.keyboard_sub"     = "যেকোনো অ্যাপে টাইপ করার সময় অনুবাদ করুন";
+"settings.feature.share"            = "শেয়ার এক্সটেনশন";
+"settings.feature.share_sub"        = "চ্যাট থেকে ভয়েস মেসেজ অনুবাদ করুন";
+"settings.info.languages"           = "ভাষা";
+"settings.info.languages_value"     = "৬৫+";
+"settings.info.speech_engine"       = "স্পিচ ইঞ্জিন";
+"settings.info.speech_engine_value" = "Apple অন-ডিভাইস";
+"settings.info.translation_api"     = "ট্রান্সলেশন API";
+"settings.info.translation_api_value" = "MyMemory (বিনামূল্যে)";
+"settings.help.system_settings"     = "সিস্টেম সেটিংস খুলুন";
+"settings.help.how_to_use"          = "কীবোর্ড কিভাবে ব্যবহার করবেন";
+"settings.footer"                   = "MyMemory API দ্বারা অনুবাদ\nApple দ্বারা স্পিচ রিকগনিশন";
+
+"permission.title"          = "কীবোর্ড অ্যাক্সেস\nপ্রয়োজন";
+"permission.subtitle"       = "সেরা অনুবাদ অভিজ্ঞতার জন্য\nকীবোর্ড অনুমতি চালু করুন";
+"permission.step1.title"    = "সেটিংস খুলুন";
+"permission.step1.sub"      = "সেটিংসে যেতে নিচের বোতামে ট্যাপ করুন";
+"permission.step2.title"    = "কীবোর্ড";
+"permission.step2.sub"      = "General → Keyboard → Keyboards-এ যান";
+"permission.step3.title"    = "অ্যাক্সেস চালু করুন";
+"permission.step3.sub"      = "TranslatingVoiceMessage চালু করুন এবং Allow Full Access দিন";
+"permission.cta"            = "সেটিংস খুলুন";
+"permission.later"          = "পরে করব";
+
+"share.title"                   = "ভয়েস ট্রান্সলেটর";
+"share.status.extracting"       = "অডিও বের করা হচ্ছে...";
+"share.status.transcribing"     = "ভয়েস মেসেজ লিখিতরূপ দেওয়া হচ্ছে...";
+"share.status.listening"        = "ভয়েস মেসেজ শুনছি...";
+"share.status.translating"      = "%@ %@ ভাষায় অনুবাদ হচ্ছে...";
+"share.label.original"          = "মূল";
+"share.label.translated"        = "অনুবাদিত";
+"share.label.translation_failed"= "অনুবাদ ব্যর্থ — মূল দেখানো হচ্ছে";
+"share.copy"                    = "অনুবাদ কপি করুন";
+"share.copied"                  = "কপি হয়েছে! ✓";
+"share.translate_to"            = "অনুবাদ করুন: %@";
+"share.error.no_audio"          = "কোনো অডিও ফাইল পাওয়া যায়নি। অনুবাদের জন্য ভয়েস মেসেজ শেয়ার করুন।";
+"share.error.unsupported"       = "অসমর্থিত ফরম্যাট। একটি অডিও বা ভয়েস মেসেজ শেয়ার করুন।";
+"share.error.no_speech"         = "ভয়েস মেসেজে কোনো কথা পাওয়া যায়নি";
+"share.error.permission_denied" = "স্পিচ রিকগনিশনের অনুমতি দেওয়া হয়নি।";
+"share.error.permission_req"    = "স্পিচ রিকগনিশনের অনুমতি প্রয়োজন";
+"share.error.unavailable"       = "আপনার ভাষার জন্য স্পিচ রিকগনিশন উপলব্ধ নয়";
+"share.error.save_failed"       = "অডিও ফাইল সংরক্ষণ ব্যর্থ হয়েছে";
+"share.error.read_failed"       = "অডিও ফাইল পড়া যায়নি। প্রথমে স্থানীয়ভাবে সংরক্ষণ করুন।";
+
+"keyboard.mode.typing"              = "⌨ টাইপিং";
+"keyboard.mode.translate"           = "🌐 অনুবাদ";
+"keyboard.language.none"            = "🔤  কোনো ভাষা নির্বাচিত নয়";
+"keyboard.language.translate_to"    = "অনুবাদ করুন: %@";
+"keyboard.preview.placeholder"      = "টাইপ করুন, বলুন বা 🎤 ট্যাপ করুন";
+"keyboard.preview.translation"      = "অনুবাদ এখানে দেখাবে";
+"keyboard.preview.translating"      = "অনুবাদ হচ্ছে...";
+"keyboard.preview.failed"           = "অনুবাদ ব্যর্থ";
+"keyboard.button.translate_replace" = "অনুবাদ ও প্রতিস্থাপন";
+"keyboard.button.translating"       = "অনুবাদ হচ্ছে...";
+"keyboard.button.select_language"   = "প্রথমে একটি ভাষা নির্বাচন করুন";
+"keyboard.button.type_something"    = "প্রথমে কিছু টাইপ করুন বা বলুন";
+"keyboard.space"                    = "স্পেস";
+"keyboard.return"                   = "রিটার্ন";
+
+"error.speech_unavailable"  = "স্পিচ রিকগনিশন উপলব্ধ নয়";
+"error.audio_session"       = "অডিও সেশন ত্রুটি: %@";
+"error.audio_engine"        = "অডিও ইঞ্জিন ত্রুটি: %@";
+"error.mic_unavailable"     = "মাইক্রোফোন উপলব্ধ নয়";
+"error.mic_failed"          = "মাইক্রোফোন ব্যর্থ। কীবোর্ড বন্ধ করুন এবং আবার চেষ্টা করুন।";
+"error.permission_denied"   = "স্পিচ রিকগনিশনের অনুমতি দেওয়া হয়নি";
+"error.transcription"       = "লিখিতরূপ দেওয়া যায়নি: %@";
+"error.translation_invalid_url"  = "অবৈধ URL";
+"error.translation_no_data"      = "কোনো ডেটা পাওয়া যায়নি";
+"error.translation_invalid_resp" = "অবৈধ প্রতিক্রিয়া";
+"error.translation_failed"       = "অনুবাদ ব্যর্থ: %@";
