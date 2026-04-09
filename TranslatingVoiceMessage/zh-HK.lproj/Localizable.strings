@@ -1,119 +1,119 @@
 /* ============================================================
-   Localizable.strings (English)
+   Localizable.strings (Chinese - Hong Kong)
    TranslatingVoiceMessage
    ============================================================ */
 
 // MARK: - Tab Bar
-"tab.translate"     = "Translate";
-"tab.keyboard"      = "Keyboard";
-"tab.settings"      = "Settings";
+"tab.translate"     = "翻譯";
+"tab.keyboard"      = "鍵盤";
+"tab.settings"      = "設定";
 
 // MARK: - Voice Translation View
-"voice.title"                   = "Voice Translator";
-"voice.subtitle"                = "Speak and translate in real-time";
-"voice.status.tap_to_start"     = "Tap the microphone to start";
-"voice.status.listening"        = "🔴 Listening... Tap to stop";
-"voice.status.tap_to_record"    = "Tap mic to record again";
-"voice.banner.from_keyboard"    = "Opened from keyboard — speak now!";
-"voice.label.original"          = "ORIGINAL";
-"voice.label.translated"        = "TRANSLATED";
-"voice.placeholder.speech"      = "Your speech will appear here...";
-"voice.placeholder.translation" = "Translation will appear here...";
-"voice.translating"             = "Translating to %@...";
-"voice.copy_translation"        = "Copy Translation";
-"voice.copied"                  = "Copied!";
-"voice.translate_to"            = "Translate to %@";
-"voice.clear"                   = "Clear & Start Over";
-"voice.translate_to_label"      = "Translate to";
+"voice.title"                   = "語音翻譯";
+"voice.subtitle"                = "即時語音翻譯";
+"voice.status.tap_to_start"     = "輕按麥克風開始";
+"voice.status.listening"        = "🔴 聆聽中... 輕按停止";
+"voice.status.tap_to_record"    = "輕按麥克風重新錄音";
+"voice.banner.from_keyboard"    = "已從鍵盤開啟 — 現在可以說話！";
+"voice.label.original"          = "原文";
+"voice.label.translated"        = "譯文";
+"voice.placeholder.speech"      = "您的語音將顯示在此...";
+"voice.placeholder.translation" = "翻譯結果將顯示在此...";
+"voice.translating"             = "正在翻譯成 %@...";
+"voice.copy_translation"        = "複製譯文";
+"voice.copied"                  = "已複製！";
+"voice.translate_to"            = "翻譯成 %@";
+"voice.clear"                   = "清除並重新開始";
+"voice.translate_to_label"      = "翻譯成";
 
 // MARK: - Language Picker
-"picker.title"      = "🌐 Select Language";
-"picker.close"      = "Close";
+"picker.title"      = "🌐 選擇語言";
+"picker.close"      = "關閉";
 
 // MARK: - Settings View
-"settings.title"                    = "Settings";
-"settings.subtitle"                 = "Configure your translation preferences";
-"settings.app_name"                 = "Voice Translator";
-"settings.version"                  = "Version 1.0";
-"settings.section.features"         = "FEATURES";
-"settings.section.translation"      = "TRANSLATION";
-"settings.section.help"             = "HELP";
-"settings.feature.voice"            = "Voice Translation";
-"settings.feature.voice_sub"        = "Speak & translate in real-time";
-"settings.feature.keyboard"         = "Translation Keyboard";
-"settings.feature.keyboard_sub"     = "Translate while typing in any app";
-"settings.feature.share"            = "Share Extension";
-"settings.feature.share_sub"        = "Translate voice messages from chats";
-"settings.info.languages"           = "Languages";
+"settings.title"                    = "設定";
+"settings.subtitle"                 = "設定您的翻譯偏好";
+"settings.app_name"                 = "語音翻譯";
+"settings.version"                  = "版本 1.0";
+"settings.section.features"         = "功能";
+"settings.section.translation"      = "翻譯";
+"settings.section.help"             = "說明";
+"settings.feature.voice"            = "語音翻譯";
+"settings.feature.voice_sub"        = "即時語音翻譯";
+"settings.feature.keyboard"         = "翻譯鍵盤";
+"settings.feature.keyboard_sub"     = "在任何應用程式中輸入時即時翻譯";
+"settings.feature.share"            = "分享延伸功能";
+"settings.feature.share_sub"        = "翻譯聊天中的語音訊息";
+"settings.info.languages"           = "支援語言";
 "settings.info.languages_value"     = "65+";
-"settings.info.speech_engine"       = "Speech Engine";
-"settings.info.speech_engine_value" = "Apple On-Device";
-"settings.info.translation_api"     = "Translation API";
-"settings.info.translation_api_value" = "MyMemory (Free)";
-"settings.help.system_settings"     = "Open System Settings";
-"settings.help.how_to_use"          = "How to use the keyboard";
-"settings.footer"                   = "Translation powered by MyMemory API\nSpeech recognition by Apple";
+"settings.info.speech_engine"       = "語音辨識引擎";
+"settings.info.speech_engine_value" = "Apple 裝置端";
+"settings.info.translation_api"     = "翻譯 API";
+"settings.info.translation_api_value" = "MyMemory（免費）";
+"settings.help.system_settings"     = "開啟系統設定";
+"settings.help.how_to_use"          = "如何使用鍵盤";
+"settings.footer"                   = "翻譯由 MyMemory API 提供\n語音辨識由 Apple 提供";
 
 // MARK: - Permission / Keyboard Setup View
-"permission.title"          = "Keyboard Access\nRequired";
-"permission.subtitle"       = "Enable keyboard permissions for the\nbest translation experience";
-"permission.step1.title"    = "Open Settings";
-"permission.step1.sub"      = "Tap the button below to go to Settings";
-"permission.step2.title"    = "Keyboards";
-"permission.step2.sub"      = "Go to General → Keyboard → Keyboards";
-"permission.step3.title"    = "Enable Access";
-"permission.step3.sub"      = "Turn on TranslatingVoiceMessage and Allow Full Access";
-"permission.cta"            = "Open Settings";
-"permission.later"          = "I'll do this later";
+"permission.title"          = "需要\n鍵盤存取權限";
+"permission.subtitle"       = "啟用鍵盤權限以獲得\n最佳翻譯體驗";
+"permission.step1.title"    = "開啟「設定」";
+"permission.step1.sub"      = "輕按下方按鈕前往「設定」";
+"permission.step2.title"    = "鍵盤";
+"permission.step2.sub"      = "前往「一般」→「鍵盤」→「鍵盤」";
+"permission.step3.title"    = "啟用存取";
+"permission.step3.sub"      = "開啟 TranslatingVoiceMessage 並允許完全存取";
+"permission.cta"            = "開啟設定";
+"permission.later"          = "稍後再設定";
 
 // MARK: - Share Extension
-"share.title"                   = "Voice Translator";
-"share.status.extracting"       = "Extracting audio...";
-"share.status.transcribing"     = "Transcribing voice message...";
-"share.status.listening"        = "Listening to voice message...";
-"share.status.translating"      = "Translating to %@ %@...";
-"share.label.original"          = "ORIGINAL";
-"share.label.translated"        = "TRANSLATED";
-"share.label.translation_failed"= "TRANSLATION FAILED — SHOWING ORIGINAL";
-"share.copy"                    = "Copy Translation";
-"share.copied"                  = "Copied! ✓";
-"share.translate_to"            = "Translate to: %@";
-"share.error.no_audio"          = "No audio file found. Share a voice message to translate.";
-"share.error.unsupported"       = "Unsupported file format. Try sharing an audio or voice message.";
-"share.error.no_speech"         = "No speech detected in voice message";
-"share.error.permission_denied" = "Speech recognition permission denied. Enable in Settings → Privacy → Speech Recognition.";
-"share.error.permission_req"    = "Speech recognition permission required";
-"share.error.unavailable"       = "Speech recognition is not available for your language";
-"share.error.save_failed"       = "Failed to save audio file";
-"share.error.read_failed"       = "Could not read the audio file. Try saving it locally first, then sharing.";
+"share.title"                   = "語音翻譯";
+"share.status.extracting"       = "正在擷取音訊...";
+"share.status.transcribing"     = "正在轉錄語音訊息...";
+"share.status.listening"        = "正在聆聽語音訊息...";
+"share.status.translating"      = "正在翻譯成 %@ %@...";
+"share.label.original"          = "原文";
+"share.label.translated"        = "譯文";
+"share.label.translation_failed"= "翻譯失敗 — 顯示原文";
+"share.copy"                    = "複製譯文";
+"share.copied"                  = "已複製！✓";
+"share.translate_to"            = "翻譯成：%@";
+"share.error.no_audio"          = "找不到音訊檔案。請分享語音訊息以進行翻譯。";
+"share.error.unsupported"       = "不支援的檔案格式。請嘗試分享音訊或語音訊息。";
+"share.error.no_speech"         = "語音訊息中未偵測到語音";
+"share.error.permission_denied" = "語音辨識權限被拒絕。請前往「設定」→「私隱」→「語音辨識」啟用。";
+"share.error.permission_req"    = "需要語音辨識權限";
+"share.error.unavailable"       = "您的語言不支援語音辨識";
+"share.error.save_failed"       = "儲存音訊檔案失敗";
+"share.error.read_failed"       = "無法讀取音訊檔案。請先儲存至本機，然後再分享。";
 
 // MARK: - Keyboard Extension
-"keyboard.mode.typing"              = "⌨ Typing";
-"keyboard.mode.translate"           = "🌐 Translate";
-"keyboard.language.none"            = "🔤  No translation selected";
-"keyboard.language.translate_to"    = "Translate to: %@";
-"keyboard.preview.placeholder"      = "Type, dictate, or tap 🎤 to speak";
-"keyboard.preview.translation"      = "Translation appears here";
-"keyboard.preview.translating"      = "Translating...";
-"keyboard.preview.failed"           = "Translation failed";
-"keyboard.button.translate_replace" = "Translate & Replace";
-"keyboard.button.translating"       = "Translating...";
-"keyboard.button.select_language"   = "Select a language first";
-"keyboard.button.type_something"    = "Type or speak something first";
-"keyboard.space"                    = "space";
-"keyboard.return"                   = "return";
+"keyboard.mode.typing"              = "⌨ 輸入";
+"keyboard.mode.translate"           = "🌐 翻譯";
+"keyboard.language.none"            = "🔤  未選擇翻譯語言";
+"keyboard.language.translate_to"    = "翻譯成：%@";
+"keyboard.preview.placeholder"      = "輸入、聽寫，或輕按 🎤 說話";
+"keyboard.preview.translation"      = "譯文將顯示在此";
+"keyboard.preview.translating"      = "翻譯中...";
+"keyboard.preview.failed"           = "翻譯失敗";
+"keyboard.button.translate_replace" = "翻譯並取代";
+"keyboard.button.translating"       = "翻譯中...";
+"keyboard.button.select_language"   = "請先選擇語言";
+"keyboard.button.type_something"    = "請先輸入或說些內容";
+"keyboard.space"                    = "空格";
+"keyboard.return"                   = "返回";
 
 // MARK: - Speech / Audio Errors
-"error.speech_unavailable"  = "Speech recognition unavailable";
-"error.audio_session"       = "Audio session error: %@";
-"error.audio_engine"        = "Audio engine error: %@";
-"error.mic_unavailable"     = "Microphone not available";
-"error.mic_failed"          = "Microphone failed. Close keyboard and try again.";
-"error.permission_denied"   = "Speech recognition permission denied";
-"error.transcription"       = "Could not transcribe: %@";
+"error.speech_unavailable"  = "語音辨識不可用";
+"error.audio_session"       = "音訊工作階段錯誤：%@";
+"error.audio_engine"        = "音訊引擎錯誤：%@";
+"error.mic_unavailable"     = "麥克風不可用";
+"error.mic_failed"          = "麥克風發生錯誤。請關閉鍵盤後重試。";
+"error.permission_denied"   = "語音辨識權限被拒絕";
+"error.transcription"       = "無法轉錄：%@";
 
 // MARK: - Translation Errors
-"error.translation_invalid_url"  = "Invalid URL";
-"error.translation_no_data"      = "No data received";
-"error.translation_invalid_resp" = "Invalid response";
-"error.translation_failed"       = "Translation failed: %@";
+"error.translation_invalid_url"  = "無效的網址";
+"error.translation_no_data"      = "未收到資料";
+"error.translation_invalid_resp" = "無效的回應";
+"error.translation_failed"       = "翻譯失敗：%@";

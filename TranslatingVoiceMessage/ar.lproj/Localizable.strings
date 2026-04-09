@@ -1,119 +1,119 @@
 /* ============================================================
-   Localizable.strings (English)
+   Localizable.strings (Arabic)
    TranslatingVoiceMessage
    ============================================================ */
 
 // MARK: - Tab Bar
-"tab.translate"     = "Translate";
-"tab.keyboard"      = "Keyboard";
-"tab.settings"      = "Settings";
+"tab.translate"     = "ترجمة";
+"tab.keyboard"      = "لوحة المفاتيح";
+"tab.settings"      = "الإعدادات";
 
 // MARK: - Voice Translation View
-"voice.title"                   = "Voice Translator";
-"voice.subtitle"                = "Speak and translate in real-time";
-"voice.status.tap_to_start"     = "Tap the microphone to start";
-"voice.status.listening"        = "🔴 Listening... Tap to stop";
-"voice.status.tap_to_record"    = "Tap mic to record again";
-"voice.banner.from_keyboard"    = "Opened from keyboard — speak now!";
-"voice.label.original"          = "ORIGINAL";
-"voice.label.translated"        = "TRANSLATED";
-"voice.placeholder.speech"      = "Your speech will appear here...";
-"voice.placeholder.translation" = "Translation will appear here...";
-"voice.translating"             = "Translating to %@...";
-"voice.copy_translation"        = "Copy Translation";
-"voice.copied"                  = "Copied!";
-"voice.translate_to"            = "Translate to %@";
-"voice.clear"                   = "Clear & Start Over";
-"voice.translate_to_label"      = "Translate to";
+"voice.title"                   = "مترجم الصوت";
+"voice.subtitle"                = "تحدث وترجم في الوقت الفعلي";
+"voice.status.tap_to_start"     = "اضغط على الميكروفون للبدء";
+"voice.status.listening"        = "🔴 جاري الاستماع... اضغط للإيقاف";
+"voice.status.tap_to_record"    = "اضغط على الميكروفون للتسجيل مجددًا";
+"voice.banner.from_keyboard"    = "مُفتتح من لوحة المفاتيح — تحدث الآن!";
+"voice.label.original"          = "الأصلي";
+"voice.label.translated"        = "المترجم";
+"voice.placeholder.speech"      = "سيظهر كلامك هنا...";
+"voice.placeholder.translation" = "ستظهر الترجمة هنا...";
+"voice.translating"             = "جاري الترجمة إلى %@...";
+"voice.copy_translation"        = "نسخ الترجمة";
+"voice.copied"                  = "تم النسخ!";
+"voice.translate_to"            = "ترجم إلى %@";
+"voice.clear"                   = "مسح والبدء من جديد";
+"voice.translate_to_label"      = "ترجم إلى";
 
 // MARK: - Language Picker
-"picker.title"      = "🌐 Select Language";
-"picker.close"      = "Close";
+"picker.title"      = "🌐 اختر اللغة";
+"picker.close"      = "إغلاق";
 
 // MARK: - Settings View
-"settings.title"                    = "Settings";
-"settings.subtitle"                 = "Configure your translation preferences";
-"settings.app_name"                 = "Voice Translator";
-"settings.version"                  = "Version 1.0";
-"settings.section.features"         = "FEATURES";
-"settings.section.translation"      = "TRANSLATION";
-"settings.section.help"             = "HELP";
-"settings.feature.voice"            = "Voice Translation";
-"settings.feature.voice_sub"        = "Speak & translate in real-time";
-"settings.feature.keyboard"         = "Translation Keyboard";
-"settings.feature.keyboard_sub"     = "Translate while typing in any app";
-"settings.feature.share"            = "Share Extension";
-"settings.feature.share_sub"        = "Translate voice messages from chats";
-"settings.info.languages"           = "Languages";
+"settings.title"                    = "الإعدادات";
+"settings.subtitle"                 = "اضبط تفضيلات الترجمة الخاصة بك";
+"settings.app_name"                 = "مترجم الصوت";
+"settings.version"                  = "الإصدار 1.0";
+"settings.section.features"         = "الميزات";
+"settings.section.translation"      = "الترجمة";
+"settings.section.help"             = "المساعدة";
+"settings.feature.voice"            = "ترجمة الصوت";
+"settings.feature.voice_sub"        = "تحدث وترجم في الوقت الفعلي";
+"settings.feature.keyboard"         = "لوحة مفاتيح الترجمة";
+"settings.feature.keyboard_sub"     = "ترجم أثناء الكتابة في أي تطبيق";
+"settings.feature.share"            = "امتداد المشاركة";
+"settings.feature.share_sub"        = "ترجم الرسائل الصوتية من الدردشات";
+"settings.info.languages"           = "اللغات";
 "settings.info.languages_value"     = "65+";
-"settings.info.speech_engine"       = "Speech Engine";
-"settings.info.speech_engine_value" = "Apple On-Device";
-"settings.info.translation_api"     = "Translation API";
-"settings.info.translation_api_value" = "MyMemory (Free)";
-"settings.help.system_settings"     = "Open System Settings";
-"settings.help.how_to_use"          = "How to use the keyboard";
-"settings.footer"                   = "Translation powered by MyMemory API\nSpeech recognition by Apple";
+"settings.info.speech_engine"       = "محرك التعرف على الكلام";
+"settings.info.speech_engine_value" = "أبل على الجهاز";
+"settings.info.translation_api"     = "واجهة برمجة الترجمة";
+"settings.info.translation_api_value" = "MyMemory (مجاني)";
+"settings.help.system_settings"     = "افتح إعدادات النظام";
+"settings.help.how_to_use"          = "كيفية استخدام لوحة المفاتيح";
+"settings.footer"                   = "الترجمة مدعومة بواجهة MyMemory API\nالتعرف على الكلام بواسطة أبل";
 
 // MARK: - Permission / Keyboard Setup View
-"permission.title"          = "Keyboard Access\nRequired";
-"permission.subtitle"       = "Enable keyboard permissions for the\nbest translation experience";
-"permission.step1.title"    = "Open Settings";
-"permission.step1.sub"      = "Tap the button below to go to Settings";
-"permission.step2.title"    = "Keyboards";
-"permission.step2.sub"      = "Go to General → Keyboard → Keyboards";
-"permission.step3.title"    = "Enable Access";
-"permission.step3.sub"      = "Turn on TranslatingVoiceMessage and Allow Full Access";
-"permission.cta"            = "Open Settings";
-"permission.later"          = "I'll do this later";
+"permission.title"          = "الوصول إلى لوحة المفاتيح\nمطلوب";
+"permission.subtitle"       = "فعّل أذونات لوحة المفاتيح للحصول على\nأفضل تجربة ترجمة";
+"permission.step1.title"    = "افتح الإعدادات";
+"permission.step1.sub"      = "اضغط على الزر أدناه للانتقال إلى الإعدادات";
+"permission.step2.title"    = "لوحات المفاتيح";
+"permission.step2.sub"      = "انتقل إلى عام → لوحة المفاتيح → لوحات المفاتيح";
+"permission.step3.title"    = "تفعيل الوصول";
+"permission.step3.sub"      = "فعّل TranslatingVoiceMessage واسمح بالوصول الكامل";
+"permission.cta"            = "افتح الإعدادات";
+"permission.later"          = "سأفعل هذا لاحقًا";
 
 // MARK: - Share Extension
-"share.title"                   = "Voice Translator";
-"share.status.extracting"       = "Extracting audio...";
-"share.status.transcribing"     = "Transcribing voice message...";
-"share.status.listening"        = "Listening to voice message...";
-"share.status.translating"      = "Translating to %@ %@...";
-"share.label.original"          = "ORIGINAL";
-"share.label.translated"        = "TRANSLATED";
-"share.label.translation_failed"= "TRANSLATION FAILED — SHOWING ORIGINAL";
-"share.copy"                    = "Copy Translation";
-"share.copied"                  = "Copied! ✓";
-"share.translate_to"            = "Translate to: %@";
-"share.error.no_audio"          = "No audio file found. Share a voice message to translate.";
-"share.error.unsupported"       = "Unsupported file format. Try sharing an audio or voice message.";
-"share.error.no_speech"         = "No speech detected in voice message";
-"share.error.permission_denied" = "Speech recognition permission denied. Enable in Settings → Privacy → Speech Recognition.";
-"share.error.permission_req"    = "Speech recognition permission required";
-"share.error.unavailable"       = "Speech recognition is not available for your language";
-"share.error.save_failed"       = "Failed to save audio file";
-"share.error.read_failed"       = "Could not read the audio file. Try saving it locally first, then sharing.";
+"share.title"                   = "مترجم الصوت";
+"share.status.extracting"       = "جاري استخراج الصوت...";
+"share.status.transcribing"     = "جاري تحويل الرسالة الصوتية إلى نص...";
+"share.status.listening"        = "جاري الاستماع للرسالة الصوتية...";
+"share.status.translating"      = "جاري الترجمة إلى %@ %@...";
+"share.label.original"          = "الأصلي";
+"share.label.translated"        = "المترجم";
+"share.label.translation_failed"= "فشلت الترجمة — عرض النص الأصلي";
+"share.copy"                    = "نسخ الترجمة";
+"share.copied"                  = "تم النسخ! ✓";
+"share.translate_to"            = "ترجم إلى: %@";
+"share.error.no_audio"          = "لم يتم العثور على ملف صوتي. شارك رسالة صوتية للترجمة.";
+"share.error.unsupported"       = "تنسيق الملف غير مدعوم. حاول مشاركة ملف صوتي أو رسالة صوتية.";
+"share.error.no_speech"         = "لم يتم اكتشاف كلام في الرسالة الصوتية";
+"share.error.permission_denied" = "تم رفض إذن التعرف على الكلام. فعّله في الإعدادات → الخصوصية → التعرف على الكلام.";
+"share.error.permission_req"    = "مطلوب إذن التعرف على الكلام";
+"share.error.unavailable"       = "التعرف على الكلام غير متاح للغتك";
+"share.error.save_failed"       = "فشل حفظ الملف الصوتي";
+"share.error.read_failed"       = "تعذر قراءة الملف الصوتي. حاول حفظه محليًا أولاً، ثم مشاركته.";
 
 // MARK: - Keyboard Extension
-"keyboard.mode.typing"              = "⌨ Typing";
-"keyboard.mode.translate"           = "🌐 Translate";
-"keyboard.language.none"            = "🔤  No translation selected";
-"keyboard.language.translate_to"    = "Translate to: %@";
-"keyboard.preview.placeholder"      = "Type, dictate, or tap 🎤 to speak";
-"keyboard.preview.translation"      = "Translation appears here";
-"keyboard.preview.translating"      = "Translating...";
-"keyboard.preview.failed"           = "Translation failed";
-"keyboard.button.translate_replace" = "Translate & Replace";
-"keyboard.button.translating"       = "Translating...";
-"keyboard.button.select_language"   = "Select a language first";
-"keyboard.button.type_something"    = "Type or speak something first";
-"keyboard.space"                    = "space";
-"keyboard.return"                   = "return";
+"keyboard.mode.typing"              = "⌨ كتابة";
+"keyboard.mode.translate"           = "🌐 ترجمة";
+"keyboard.language.none"            = "🔤  لم يتم اختيار ترجمة";
+"keyboard.language.translate_to"    = "ترجم إلى: %@";
+"keyboard.preview.placeholder"      = "اكتب، أو أملِ، أو اضغط 🎤 للتحدث";
+"keyboard.preview.translation"      = "تظهر الترجمة هنا";
+"keyboard.preview.translating"      = "جاري الترجمة...";
+"keyboard.preview.failed"           = "فشلت الترجمة";
+"keyboard.button.translate_replace" = "ترجم واستبدل";
+"keyboard.button.translating"       = "جاري الترجمة...";
+"keyboard.button.select_language"   = "اختر لغة أولاً";
+"keyboard.button.type_something"    = "اكتب أو تحدث بشيء أولاً";
+"keyboard.space"                    = "مسافة";
+"keyboard.return"                   = "رجوع";
 
 // MARK: - Speech / Audio Errors
-"error.speech_unavailable"  = "Speech recognition unavailable";
-"error.audio_session"       = "Audio session error: %@";
-"error.audio_engine"        = "Audio engine error: %@";
-"error.mic_unavailable"     = "Microphone not available";
-"error.mic_failed"          = "Microphone failed. Close keyboard and try again.";
-"error.permission_denied"   = "Speech recognition permission denied";
-"error.transcription"       = "Could not transcribe: %@";
+"error.speech_unavailable"  = "التعرف على الكلام غير متاح";
+"error.audio_session"       = "خطأ في جلسة الصوت: %@";
+"error.audio_engine"        = "خطأ في محرك الصوت: %@";
+"error.mic_unavailable"     = "الميكروفون غير متاح";
+"error.mic_failed"          = "فشل الميكروفون. أغلق لوحة المفاتيح وحاول مجددًا.";
+"error.permission_denied"   = "تم رفض إذن التعرف على الكلام";
+"error.transcription"       = "تعذر التحويل إلى نص: %@";
 
 // MARK: - Translation Errors
-"error.translation_invalid_url"  = "Invalid URL";
-"error.translation_no_data"      = "No data received";
-"error.translation_invalid_resp" = "Invalid response";
-"error.translation_failed"       = "Translation failed: %@";
+"error.translation_invalid_url"  = "رابط غير صالح";
+"error.translation_no_data"      = "لم يتم استلام بيانات";
+"error.translation_invalid_resp" = "استجابة غير صالحة";
+"error.translation_failed"       = "فشلت الترجمة: %@";
